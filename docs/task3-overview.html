@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobility Insight — Task 3 Overview</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg:#f5f7fb; --surface:#fff; --soft:#edf3ff; --text:#172033;
+      --muted:#5e6b80; --line:#d9e1ec; --blue:#2457d6; --blue-soft:#e7efff;
+      --green:#087a55; --green-soft:#e5f6ef; --orange:#a45100; --orange-soft:#fff0df;
+      --purple:#6941c6; --purple-soft:#f1ebff; --red:#b42318; --red-soft:#feeceb;
+      --code:#101828; --code-text:#eaecf0; --shadow:0 8px 28px rgba(31,45,72,.08);
+    }
+    @media (prefers-color-scheme:dark) {
+      :root {
+        --bg:#0e1420; --surface:#151d2b; --soft:#182641; --text:#eef3fb;
+        --muted:#a7b1c2; --line:#2c384a; --blue:#83a9ff; --blue-soft:#1c315d;
+        --green:#68d6ad; --green-soft:#12372f; --orange:#ffb969; --orange-soft:#452c14;
+        --purple:#c4a7ff; --purple-soft:#302255; --red:#ff928a; --red-soft:#4b2224;
+        --code:#090d14; --code-text:#edf2f7; --shadow:none;
+      }
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; line-height:1.62; }
+    .page { width:min(1220px,calc(100% - 32px)); margin:0 auto; padding:36px 0 64px; }
+    header { padding:32px; border:1px solid var(--line); background:linear-gradient(135deg,var(--surface),var(--soft)); border-radius:18px; box-shadow:var(--shadow); }
+    h1,h2,h3 { line-height:1.25; margin-top:0; }
+    h1 { margin-bottom:8px; font-size:clamp(1.85rem,4vw,2.65rem); }
+    h2 { margin:42px 0 16px; font-size:1.48rem; }
+    h3 { margin-bottom:8px; font-size:1.03rem; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"Cascadia Code",Consolas,monospace; font-size:.9em; }
+    pre { margin:14px 0 0; padding:16px; overflow-x:auto; background:var(--code); color:var(--code-text); border-radius:12px; }
+    .subtitle { max-width:940px; color:var(--muted); }
+    .badges { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+    .badge { padding:5px 10px; border-radius:999px; background:var(--blue-soft); color:var(--blue); font-size:.84rem; font-weight:700; }
+    .toc { display:flex; flex-wrap:wrap; gap:8px 18px; padding:18px 4px 0; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+    .grid.four { grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .card { padding:18px; border:1px solid var(--line); border-radius:14px; background:var(--surface); box-shadow:var(--shadow); }
+    .metric { font-size:1.8rem; font-weight:780; color:var(--blue); }
+    .muted { color:var(--muted); }
+    .flow { display:grid; grid-template-columns:minmax(160px,.9fr) 35px minmax(190px,1fr) 35px minmax(215px,1.15fr) 35px minmax(190px,1fr); align-items:stretch; gap:8px; }
+    .flow-col { display:grid; align-content:center; gap:9px; }
+    .node { padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--surface); }
+    .node.blue { border-color:var(--blue); background:var(--blue-soft); }
+    .node.purple { border-color:var(--purple); background:var(--purple-soft); }
+    .node.green { border-color:var(--green); background:var(--green-soft); }
+    .arrow { align-self:center; justify-self:center; color:var(--blue); font-size:1.55rem; }
+    .table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:14px; background:var(--surface); }
+    table { width:100%; min-width:820px; border-collapse:collapse; }
+    th,td { padding:11px 13px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+    th { background:var(--soft); color:var(--muted); font-size:.79rem; text-transform:uppercase; letter-spacing:.035em; white-space:nowrap; }
+    tr:last-child td { border-bottom:0; }
+    .num { text-align:right; font-variant-numeric:tabular-nums; }
+    .status { display:inline-block; padding:3px 8px; border-radius:999px; font-size:.77rem; font-weight:750; }
+    .core { color:var(--blue); background:var(--blue-soft); }
+    .shared { color:var(--green); background:var(--green-soft); }
+    .config { color:var(--purple); background:var(--purple-soft); }
+    .doc { color:var(--orange); background:var(--orange-soft); }
+    .note { margin-top:14px; padding:12px 14px; border-left:4px solid var(--orange); background:var(--orange-soft); border-radius:8px; }
+    .note.good { border-left-color:var(--green); background:var(--green-soft); }
+    .note.limit { border-left-color:var(--red); background:var(--red-soft); }
+    .formula { text-align:center; font-family:"Cascadia Code",Consolas,monospace; padding:15px; border:1px dashed var(--blue); border-radius:12px; background:var(--blue-soft); overflow-x:auto; }
+    .steps { counter-reset:step; display:grid; gap:12px; }
+    .step { position:relative; padding:15px 16px 15px 58px; }
+    .step::before { counter-increment:step; content:counter(step); position:absolute; left:16px; top:15px; width:28px; height:28px; border-radius:50%; display:grid; place-items:center; background:var(--blue); color:white; font-weight:750; }
+    .check { color:var(--green); font-weight:800; }
+    .compliance { display:inline-block; padding:4px 9px; border-radius:999px; font-size:.76rem; font-weight:800; white-space:nowrap; }
+    .compliant { color:var(--green); background:var(--green-soft); }
+    .conditional { color:var(--orange); background:var(--orange-soft); }
+    .not-compliant { color:var(--red); background:var(--red-soft); }
+    footer { margin-top:42px; color:var(--muted); font-size:.88rem; }
+    @media (max-width:940px) { .grid,.grid.four { grid-template-columns:1fr 1fr; } .flow { grid-template-columns:1fr; } .arrow { transform:rotate(90deg); } }
+    @media (max-width:620px) { .grid,.grid.four { grid-template-columns:1fr; } header { padding:23px; } }
+    @media print { body { background:#fff; color:#000; } .page { width:100%; padding:0; } header,.card,.table-wrap { box-shadow:none; break-inside:avoid; } .toc { display:none; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>Mobility Insight · Task 3 Overview</h1>
+    </header>
+
+    <nav class="toc" aria-label="สารบัญ">
+      <a href="#workflow">Workflow</a>
+      <a href="#method">Methodology</a>
+      <a href="#grades">Grade handling</a>
+      <a href="#weights">Weights</a>
+      <a href="#cold-start">Cold start</a>
+      <a href="#files">File documentation</a>
+      <a href="#results">Verified results</a>
+      <a href="#requirements">Requirements</a>
+    </nav>
+
+    <section id="workflow">
+      <h2>1. Workflow</h2>
+      <div class="flow" aria-label="Task 3 flow">
+        <div class="flow-col">
+          <div class="node"><strong>Task 2 DataFrame</strong><br>หนึ่งแถวต่อ trip<br><code>TripFeature</code></div>
+          <div class="node"><strong>Public API</strong><br><code>DriverRiskModel</code></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-col">
+          <div class="node blue"><strong>Trip scorer strategy</strong><br><code>weighted_composite</code> หรือ <code>robust_zscore</code> ในไฟล์ core เดียว</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-col">
+          <div class="node purple"><strong>Trip scores</strong><br><code>trip_score</code>, <code>risk_points</code>, coverage, top factor</div>
+          <div class="node purple"><strong>Contribution ledger</strong><br>observed value, weight, normalized risk, penalty, rank</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-col">
+          <div class="node green"><strong>DriverRiskAggregator</strong><br>group by vehicle + grade แล้วใช้ cold-start shrinkage</div>
+          <div class="node"><strong>Vehicle score</strong><br>observed/final score, exposure, confidence, version</div>
+        </div>
+      </div>
+
+      <div class="steps" style="margin-top:16px">
+        <div class="card step"><strong>Validate Task 2 contract</strong> — ตรวจทุกแถวด้วย Pydantic <code>TripFeature</code>; invalid rows เลือก skip+log หรือ fail-fast จาก YAML</div>
+        <div class="card step"><strong>Select grade strategy</strong> — Grade A ใช้ speed + harsh events + exposure; Grade B ใช้เฉพาะ GPS speed behavior</div>
+        <div class="card step"><strong>Score each trip</strong> — normalize feature ตาม safe/severe threshold แล้วหัก weighted penalty จาก 100</div>
+        <div class="card step"><strong>Explain each point</strong> — เก็บ contribution ledger และจัดอันดับปัจจัยที่หักคะแนนจริง ไม่ใช่แสดงเพียง configured weight</div>
+        <div class="card step"><strong>Aggregate separately</strong> — group ตาม <code>(source, vehicle_id, data_grade, score_version)</code> จึงไม่ผสมความหมายของ A และ B</div>
+        <div class="card step"><strong>Apply cold start</strong> — shrink observed mean เข้าหา prior, แสดง confidence และเก็บทั้ง observed/final score</div>
+      </div>
+    </section>
+
+    <section id="method">
+      <h2>2. Methodology เมื่อไม่มี labelled ground truth</h2>
+      <p>วิธีหลักคือ <strong>literature-informed rule-based composite</strong> และ implement <strong>robust_zscore</strong> เป็น unsupervised challenger</p>
+      <div class="formula">normalized_risk = clip((observed − safe) / (severe − safe), 0, 1)<br>penalty_points = normalized_risk × effective_weight × 100<br>trip_score = 100 − Σ penalty_points</div>
+
+      <h3 style="margin-top:22px">เปรียบเทียบสองแนวทางตาม requirement</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Dimension</th><th>weighted_composite — primary</th><th>robust_zscore — implemented challenger</th></tr></thead>
+          <tbody>
+            <tr><td>Interpretability</td><td>ทุกคะแนนที่ถูกหักมี threshold, weight และ rationale</td><td>แสดง feature deviation จาก cohort median/MAD ได้ แต่ “ผิดจากกลุ่ม” ไม่เท่ากับ “ไม่ปลอดภัย”</td></tr>
+            <tr><td>Accuracy claim</td><td>ไม่อ้าง predictive accuracy จนกว่าจะมี labels</td><td>ไม่ใช้ labels เช่นกัน จึงเป็น anomaly challenger ไม่ใช่ accident predictor</td></tr>
+            <tr><td>Simplicity</td><td>ใช้ pandas + Pydantic + YAML เดิม</td><td>อยู่ใน <code>trip_scorer.py</code> เดิมและไม่เพิ่ม ML dependency</td></tr>
+            <tr><td>Flexibility</td><td>ปรับ weights/thresholds ได้ แต่ interaction เป็นเชิงเส้น</td><td>ปรับตามพฤติกรรม cohort โดยใช้ robust statistics แต่คะแนนเปลี่ยนเมื่อ cohort เปลี่ยน</td></tr>
+            <tr><td>Cold start</td><td>ใช้ explicit prior และแสดง low confidence</td><td>cohort ต่ำกว่า 3 trips คืน neutral 70 พร้อม <code>insufficient_cohort</code></td></tr>
+            <tr><td>Underwriter use</td><td>วิธีหลัก: ตอบได้ว่า “หักกี่คะแนน เพราะอะไร”</td><td>ใช้เป็น challenger/diagnostic เท่านั้น ไม่ใช้กำหนดราคาโดยลำพัง</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="grades">
+      <h2>3. Data-grade behavior</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Grade A · Driver Risk Score</h3>
+          <p>ใช้ high-frequency CAN/GPS evidence: speed, harsh braking, harsh acceleration, speed smoothness และ night exposure</p>
+        </div>
+        <div class="card">
+          <h3>Grade B · Speed Behavior Index</h3>
+          <p>ใช้ maximum speed, average speed และ speed variability เท่านั้น ไม่สร้าง harsh events จาก sparse GPS</p>
+        </div>
+        <div class="card">
+          <h3>Always-null engine</h3>
+          <p>Task 2 ใช้ <code>gps_gap_fallback</code> และส่งเป็น Grade B จากนั้น Task 3 จึงคืน Speed Behavior Index โดยไม่ตีความ speed=0 ว่า engine-on</p>
+        </div>
+      </div>
+      <div class="note limit"><strong>Entity limitation:</strong> source data ไม่มี <code>driver_id</code> จึง aggregate ที่ <code>vehicle_id</code> ซึ่งเป็น vehicle score/driver proxy เท่านั้น รถที่มีหลายคนขับจะไม่สามารถแยกบุคคลได้</div>
+    </section>
+
+    <section id="weights">
+      <h2>4. Weights, provenance และ missing evidence</h2>
+      <p>Review paper รองรับ weighted-linear methodology, factor selection และ risk direction ส่วนตัวเลขน้ำหนักเป็น <strong>versioned expert priors</strong> เพราะไม่มี labels สำหรับ fit น้ำหนัก</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Grade</th><th>Feature</th><th>Weight</th><th>Safe → Severe</th><th>Basis</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>Maximum speed</td><td class="num">30%</td><td>80 → 130 km/h</td><td>Compliance literature + design split</td></tr>
+            <tr><td>A</td><td>Average speed</td><td class="num">20%</td><td>50 → 100 km/h</td><td>Actuarial/compliance literature + design split</td></tr>
+            <tr><td>A</td><td>Harsh brake rate</td><td class="num">20%</td><td>0 → 4/hour</td><td>Kinematic literature + design judgment</td></tr>
+            <tr><td>A</td><td>Harsh acceleration rate</td><td class="num">12%</td><td>0 → 6/hour</td><td>Kinematic literature + design judgment</td></tr>
+            <tr><td>A</td><td>Speed standard deviation</td><td class="num">8%</td><td>10 → 35 km/h</td><td>Smoothness literature + design judgment</td></tr>
+            <tr><td>A</td><td>Night exposure</td><td class="num">10%</td><td>0 → 1</td><td>Actuarial literature; exposure, not control behavior</td></tr>
+            <tr><td>B</td><td>Maximum speed</td><td class="num">50%</td><td>80 → 130 km/h</td><td>GPS-observable tail-risk proxy</td></tr>
+            <tr><td>B</td><td>Average speed</td><td class="num">30%</td><td>50 → 100 km/h</td><td>GPS-observable sustained-speed proxy</td></tr>
+            <tr><td>B</td><td>Speed standard deviation</td><td class="num">20%</td><td>10 → 35 km/h</td><td>Limited GPS smoothness proxy</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><strong>Missing is not safe:</strong> หาก Grade A ไม่มี harsh count ระบบไม่แทนด้วยศูนย์ แต่ตัด component นั้นออก, renormalize เฉพาะน้ำหนักที่มีหลักฐาน และลด <code>evidence_coverage</code> เพื่อให้ downstream เห็นว่าคะแนนมีข้อมูลไม่ครบ</div>
+    </section>
+
+    <section id="cold-start">
+      <h2>5. Risk per trip → cold-start-adjusted vehicle score</h2>
+      <div class="formula">final_score = (trip_count × observed_score + prior_strength × prior_score)<br>÷ (trip_count + prior_strength)</div>
+      <div class="grid" style="margin-top:14px">
+        <div class="card"><div class="metric">70</div><strong>Prior score</strong><p class="muted">operational assumption, not literature-fitted</p></div>
+        <div class="card"><div class="metric">5</div><strong>Prior strength</strong><p class="muted">equivalent trip count in YAML</p></div>
+        <div class="card"><div class="metric">1–4</div><strong>Low confidence</strong><p class="muted">5–19 medium, 20+ high</p></div>
+      </div>
+      <p style="margin-top:14px">ตัวอย่าง: รถมีหนึ่ง trip ได้ observed score 40 จะได้ final score <code>(1×40 + 5×70)/6 = 65</code> พร้อมแสดงทั้งสองค่าและ <code>confidence=low</code> จึงไม่ตัดสินจากหลักฐานเพียงครั้งเดียว</p>
+    </section>
+
+    <section id="files">
+      <h2>6. File documentation</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>File</th><th>Type</th><th>Main responsibility</th><th>Key metadata / boundary</th></tr></thead>
+          <tbody>
+            <tr><td><code>submission/model.py</code></td><td><span class="status core">Public API</span></td><td><code>DriverRiskModel(method=...)</code> เลือก scorer และ orchestrate aggregation</td><td>รองรับ <code>weighted_composite</code> และ <code>robust_zscore</code>; ไม่มี business formula ซ้ำ</td></tr>
+            <tr><td><code>src/mobility/task3_scoring/trip_scorer.py</code></td><td><span class="status core">Core</span></td><td>เก็บ scorer ทั้งสองวิธี, grade strategy และ contributions</td><td>สอง classes ในไฟล์เดียว; shared validation/features/config ลด dependency files</td></tr>
+            <tr><td><code>src/mobility/task3_scoring/driver_aggregator.py</code></td><td><span class="status core">Core</span></td><td>aggregate trip scores และ Bayesian-style shrinkage</td><td>ไม่ผสม grade/version; confidence จาก trip count</td></tr>
+            <tr><td><code>src/mobility/task3_scoring/__init__.py</code></td><td><span class="status shared">Package</span></td><td>export core classes ที่ตั้งใจให้ reuse</td><td>surface area เล็ก ไม่มี abstract hierarchy</td></tr>
+            <tr><td><code>config/task3_scoring.yaml</code></td><td><span class="status config">Config</span></td><td>weights, thresholds, rationale, references, prior, confidence และ version</td><td>Pydantic ตรวจ weights รวม 1.0 และ threshold direction</td></tr>
+            <tr><td><code>src/mobility/common/config.py</code></td><td><span class="status shared">Common</span></td><td>typed Task 3 settings และ YAML loader</td><td>shared config layer; ไม่ผูกกับ entry point</td></tr>
+            <tr><td><code>src/mobility/common/schemas.py</code></td><td><span class="status shared">Contracts</span></td><td><code>TripFeature</code>, <code>TripRisk</code>, <code>DriverRisk</code></td><td>range, timezone, grade, confidence และ extra-field validation</td></tr>
+            <tr><td><code>src/mobility/common/logger.py</code></td><td><span class="status shared">Common</span></td><td>structured JSONL events</td><td>invalid trips และ scoring completion</td></tr>
+            <tr><td><code>submission/scoring_design.md</code></td><td><span class="status doc">Deliverable</span></td><td>one-page methodology, comparison, grade behavior, edge cases, limitations</td><td>ระบุชัดว่า score ไม่ใช่ calibrated crash probability</td></tr>
+            <tr><td><code>tests/test_task3_model.py</code></td><td><span class="status shared">Tests</span></td><td>15 Task 3 tests</td><td>สอง methods, robust cohort fallback/outlier, contributions, grades, cold start และ real-data comparison</td></tr>
+            <tr><td><code>notebooks/00_end_to_end_eda.ipynb</code></td><td><span class="status doc">EDA</span></td><td>แสดง trip → vehicle → contributions ทั้ง pipeline</td><td>in-memory; ไม่เขียน datasets</td></tr>
+            <tr><td><code>docs/review-paper.html</code></td><td><span class="status doc">Reference</span></td><td>literature rationale สำหรับ methodology และ feature directions</td><td>citation markers ควรเชื่อม bibliography/DOI ก่อนใช้อ้างอิงภายนอก</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="results">
+      <h2>7. Verified end-to-end result</h2>
+      <p class="muted">ผลจาก Task 1 → Task 2 → Task 3 ผ่าน public APIs ใน memory: 760 events → 5 trips → 5 Grade B vehicle profiles.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Source / vehicle</th><th>Trip score</th><th>Risk points</th><th>Top factor</th><th>Final score</th><th>Confidence</th><th>Label</th></tr></thead>
+          <tbody>
+            <tr><td>SCGJWD<br><code>001000000111002</code></td><td class="num">97.49</td><td class="num">2.51</td><td>speed_std_kmh</td><td class="num">74.58</td><td>low</td><td>Speed Behavior Index</td></tr>
+            <tr><td>SCGJWD<br><code>001000000111003</code></td><td class="num">43.29</td><td class="num">56.71</td><td>max_speed_kmh</td><td class="num">65.55</td><td>low</td><td>Speed Behavior Index</td></tr>
+            <tr><td>WDMT<br><code>5กข-1122</code></td><td class="num">93.17</td><td class="num">6.83</td><td>speed_std_kmh</td><td class="num">73.86</td><td>low</td><td>Speed Behavior Index</td></tr>
+            <tr><td>WDMT<br><code>6งจ-3344</code></td><td class="num">43.36</td><td class="num">56.64</td><td>max_speed_kmh</td><td class="num">65.56</td><td>low</td><td>Speed Behavior Index</td></tr>
+            <tr><td>WDMT<br><code>7ดต-5566</code></td><td class="num">67.02</td><td class="num">32.98</td><td>speed_std_kmh</td><td class="num">69.50</td><td>low</td><td>Speed Behavior Index</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 style="margin-top:22px">Vehicle-score comparison — actual data</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Source / vehicle</th><th>weighted_composite</th><th>robust_zscore</th><th>Primary − challenger</th><th>Robust status</th></tr></thead>
+          <tbody>
+            <tr><td>SCGJWD · <code>001000000111002</code></td><td class="num">74.58</td><td class="num">70.00</td><td class="num">+4.58</td><td>insufficient_cohort</td></tr>
+            <tr><td>SCGJWD · <code>001000000111003</code></td><td class="num">65.55</td><td class="num">70.00</td><td class="num">−4.45</td><td>insufficient_cohort</td></tr>
+            <tr><td>WDMT · <code>5กข-1122</code></td><td class="num">73.86</td><td class="num">75.00</td><td class="num">−1.14</td><td>experimental</td></tr>
+            <tr><td>WDMT · <code>6งจ-3344</code></td><td class="num">65.56</td><td class="num">72.43</td><td class="num">−6.87</td><td>experimental</td></tr>
+            <tr><td>WDMT · <code>7ดต-5566</code></td><td class="num">69.50</td><td class="num">74.27</td><td class="num">−4.76</td><td>experimental</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 style="margin-top:22px">Ranked contribution table — actual Grade B portfolio</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rank</th><th>Feature</th><th>Configured weight</th><th>Mean normalized risk</th><th>Mean penalty points</th></tr></thead>
+          <tbody>
+            <tr><td class="num">1</td><td>max_speed_kmh</td><td class="num">50%</td><td class="num">0.280</td><td class="num">14.00</td></tr>
+            <tr><td class="num">2</td><td>avg_speed_kmh</td><td class="num">30%</td><td class="num">0.404</td><td class="num">12.11</td></tr>
+            <tr><td class="num">3</td><td>speed_std_kmh</td><td class="num">20%</td><td class="num">0.251</td><td class="num">5.02</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><strong>Interpretation:</strong> ทุก vehicle มีเพียงหนึ่ง valid trip จึงถูก shrink เข้าหา prior 70 และติดป้าย low confidence ผลนี้ไม่ใช่ Driver Score และไม่ใช่ crash probability</div>
+    </section>
+
+    <section id="requirements">
+      <h2>8. Requirement traceability</h2>
+      <p class="muted"><strong>Compliant</strong> = requirement implemented and verified; <strong>Compliant with conditions</strong> = implemented but the final result depends on an external condition such as the chosen document renderer; <strong>Not compliant</strong> = missing or contradicted by evidence.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Requirement</th><th>Implementation evidence</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>0–100, 100 safest</td><td>linear penalty formula + Pydantic 0–100 constraints</td><td><span class="compliance compliant">Compliant</span></td></tr>
+            <tr><td>No fabricated labels</td><td>rule-based; weights declared expert priors, no synthetic target</td><td><span class="compliance compliant">Compliant</span></td></tr>
+            <tr><td>Compare at least two approaches</td><td>ทั้ง <code>weighted_composite</code> และ <code>robust_zscore</code> implement, test และแสดงผลจริง</td><td><span class="compliance compliant">Compliant</span></td></tr>
+            <tr><td>Explainable to underwriter</td><td>trip ledger, top factor, ranked penalty table and plain-language rationale</td><td><span class="compliance compliant">Compliant</span></td></tr>
+            <tr><td>Different behavior by grade</td><td>separate components, labels and aggregation groups</td><td><span class="compliance compliant">Compliant</span></td></tr>
+            <tr><td>Honest Grade B label</td><td><code>Speed Behavior Index</code>, never full Driver Score</td><td><span class="compliance compliant">Compliant</span></td></tr>
+            <tr><td>Ranked feature contribution</td><td><code>feature_contributions_</code> ranks actual mean penalty</td><td><span class="compliance compliant">Compliant</span></td></tr>
+            <tr><td>One-trip behavior</td><td>prior shrinkage + observed score + low confidence</td><td><span class="compliance compliant">Compliant</span></td></tr>
+            <tr><td>Always-null engine</td><td>Grade B GPS fallback → Speed Behavior Index only</td><td><span class="compliance compliant">Compliant</span></td></tr>
+            <tr><td><code>model.py</code> deliverable</td><td>public <code>DriverRiskModel</code> with explicit trip-first methods</td><td><span class="compliance compliant">Compliant</span></td></tr>
+            <tr><td><code>scoring_design.md</code> ≤ 1 page</td><td>582-word one-page-equivalent; exact pagination depends on renderer, font and margins</td><td><span class="compliance conditional">Compliant with conditions</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>9. Usage</h2>
+      <pre><code>from submission.model import DriverRiskModel
+
+model = DriverRiskModel()
+trip_scores = model.score_trips(trip_features)
+driver_scores = model.aggregate_drivers(trip_scores)
+
+trip_ledger = model.trip_contributions_
+ranked_features = model.feature_contributions_
+
+# Convenience: runs both stages and returns driver_scores
+driver_scores = model.score(trip_features)</code></pre>
+    </section>
+
+    <footer>Mobility Insight · Task 3 technical overview</footer>
+  </main>
+</body>
+</html>

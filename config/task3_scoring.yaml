@@ -1,0 +1,101 @@
+input:
+  invalid_record_policy: skip       # skip | error
+
+score:
+  minimum: 0
+  maximum: 100
+  version: rule-v1-literature-informed
+
+rate_normalization:
+  minimum_exposure_hours: 0.25
+
+# Feature choice and risk direction are literature-informed. Exact numerical
+# weights are transparent expert priors, not fitted accident probabilities.
+grade_a:
+  label: Driver Risk Score
+  components:
+    max_speed_kmh:
+      weight: 0.30
+      safe: 80
+      severe: 130
+      basis: literature_anchor_plus_design_judgment
+      rationale: High peak speed increases severity exposure; road speed limits are unavailable.
+      references: [Medarevic-2024]
+    avg_speed_kmh:
+      weight: 0.20
+      safe: 50
+      severe: 100
+      basis: literature_anchor_plus_design_judgment
+      rationale: Sustained high speed complements the peak-speed signal.
+      references: [Guillen-2024, Medarevic-2024]
+    harsh_brake_rate_per_hour:
+      weight: 0.20
+      safe: 0
+      severe: 4
+      basis: kinematic_literature_plus_design_judgment
+      rationale: Repeated hard braking can indicate late response or poor anticipation.
+      references: [review-paper-cite-18, review-paper-cite-43]
+    harsh_accel_rate_per_hour:
+      weight: 0.12
+      safe: 0
+      severe: 6
+      basis: kinematic_literature_plus_design_judgment
+      rationale: Repeated hard acceleration is an observable aggression proxy.
+      references: [review-paper-cite-18, review-paper-cite-43]
+    speed_std_kmh:
+      weight: 0.08
+      safe: 10
+      severe: 35
+      basis: smoothness_literature_plus_design_judgment
+      rationale: Speed instability is used as a coarse smoothness proxy.
+      references: [review-paper-cite-85]
+    night_exposure:
+      weight: 0.10
+      safe: 0
+      severe: 1
+      basis: actuarial_literature_plus_design_judgment
+      rationale: Night driving is exposure risk, not proof of unsafe control behavior.
+      references: [Guillen-2024]
+
+grade_b:
+  label: Speed Behavior Index
+  components:
+    max_speed_kmh:
+      weight: 0.50
+      safe: 80
+      severe: 130
+      basis: literature_anchor_plus_design_judgment
+      rationale: Peak speed is the strongest observable tail-risk proxy in sparse GPS.
+      references: [Guillen-2024, Medarevic-2024]
+    avg_speed_kmh:
+      weight: 0.30
+      safe: 50
+      severe: 100
+      basis: literature_anchor_plus_design_judgment
+      rationale: Sustained speed is observable even without engine or CAN signals.
+      references: [Guillen-2024]
+    speed_std_kmh:
+      weight: 0.20
+      safe: 10
+      severe: 35
+      basis: smoothness_literature_plus_design_judgment
+      rationale: Variation is a limited GPS-only smoothness proxy.
+      references: [review-paper-cite-85]
+
+cold_start:
+  prior_score: 70
+  prior_strength: 5
+
+confidence:
+  medium_trip_count: 5
+  high_trip_count: 20
+
+robust_zscore:
+  version: robust-zscore-v1
+  cohort_columns: [source, data_grade]
+  minimum_cohort_size: 3
+  clipping_limit: 3.5
+  neutral_prior: 70
+
+logging:
+  file: logs/task3_scoring.jsonl

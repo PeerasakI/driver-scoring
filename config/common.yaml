@@ -1,0 +1,15 @@
+project:
+  timezone: Asia/Bangkok
+  environment: development
+
+paths:
+  bronze: data/bronze
+  silver: data/silver
+  gold: data/gold
+  quarantine: data/quarantine
+  logs: logs
+
+logging:
+  level: INFO
+  format: jsonl
+  file: logs/task1_ingestion.jsonl

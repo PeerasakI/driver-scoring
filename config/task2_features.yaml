@@ -1,0 +1,35 @@
+input:
+  invalid_record_policy: skip   # skip | error
+
+segmentation:
+  gap_minutes: 10
+  minimum_duration_minutes: 2
+  enable_gps_fallback: true
+  close_open_trip_at_stream_end: true
+
+harsh_events:
+  acceleration_threshold_mps2: 3.0
+  braking_threshold_mps2: -3.5
+  maximum_sample_interval_seconds: 5
+  grade_a_only: true
+
+idle:
+  speed_threshold_kmh: 0.0
+  require_engine_on: true
+
+time_of_day:
+  night_start: "22:00"
+  night_end: "05:00"
+  morning_peak_start: "07:00"
+  morning_peak_end: "09:00"
+  evening_peak_start: "17:00"
+  evening_peak_end: "19:00"
+
+output:
+  path: data/gold/trip_features/trip_features.parquet
+  format: parquet
+  write_mode: overwrite         # overwrite | append
+  deduplicate: true
+
+logging:
+  file: logs/task2_features.jsonl

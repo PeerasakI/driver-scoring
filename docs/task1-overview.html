@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobility Insight — Task 1 Overview</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-soft: #eef4ff;
+      --text: #172033;
+      --muted: #5d687c;
+      --line: #d9e0ea;
+      --primary: #2457d6;
+      --primary-soft: #e7efff;
+      --green: #087a55;
+      --green-soft: #e5f6ef;
+      --orange: #a45100;
+      --orange-soft: #fff0df;
+      --red: #b42318;
+      --red-soft: #feeceb;
+      --code: #111827;
+      --code-text: #e5e7eb;
+      --shadow: 0 8px 28px rgba(31, 45, 72, .08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e1420;
+        --surface: #151d2b;
+        --surface-soft: #182641;
+        --text: #eef3fb;
+        --muted: #a7b1c2;
+        --line: #2c384a;
+        --primary: #83a9ff;
+        --primary-soft: #1c315d;
+        --green: #68d6ad;
+        --green-soft: #12372f;
+        --orange: #ffb969;
+        --orange-soft: #452c14;
+        --red: #ff928a;
+        --red-soft: #4b2224;
+        --code: #090d14;
+        --code-text: #edf2f7;
+        --shadow: none;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+    .page { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 36px 0 64px; }
+    header {
+      padding: 32px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, var(--surface), var(--surface-soft));
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+    h1, h2, h3 { line-height: 1.25; margin-top: 0; }
+    h1 { margin-bottom: 8px; font-size: clamp(1.8rem, 4vw, 2.6rem); }
+    h2 { margin: 42px 0 16px; font-size: 1.45rem; }
+    h3 { font-size: 1rem; margin-bottom: 8px; }
+    p { margin: 0 0 12px; }
+    .subtitle { color: var(--muted); max-width: 820px; }
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .badge {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: .84rem;
+      font-weight: 600;
+    }
+    .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      padding: 18px 4px 0;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .metric { font-size: 1.8rem; font-weight: 750; color: var(--primary); }
+    .muted { color: var(--muted); }
+    .flow {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) 42px minmax(210px, 1.15fr) 42px minmax(230px, 1.25fr);
+      align-items: stretch;
+      gap: 10px;
+    }
+    .flow-column { display: grid; gap: 10px; align-content: center; }
+    .node {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      padding: 14px;
+    }
+    .node.primary { border-color: var(--primary); background: var(--primary-soft); }
+    .node.success { border-color: var(--green); background: var(--green-soft); }
+    .arrow { align-self: center; justify-self: center; color: var(--primary); font-size: 1.7rem; }
+    .subflow {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .route-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--orange);
+      background: var(--orange-soft);
+      border-radius: 8px;
+    }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    th, td { padding: 12px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+    th { background: var(--surface-soft); color: var(--muted); font-size: .82rem; text-transform: uppercase; letter-spacing: .035em; }
+    tr:last-child td { border-bottom: 0; }
+    code { font-family: "Cascadia Code", Consolas, monospace; font-size: .9em; }
+    pre {
+      margin: 14px 0 0;
+      padding: 16px;
+      overflow-x: auto;
+      background: var(--code);
+      color: var(--code-text);
+      border-radius: 12px;
+    }
+    .status { display: inline-block; font-size: .78rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; }
+    .core { color: var(--primary); background: var(--primary-soft); }
+    .shared { color: var(--green); background: var(--green-soft); }
+    .optional { color: var(--orange); background: var(--orange-soft); }
+    .compliance { display: inline-block; padding: 4px 9px; border-radius: 999px; font-size: .76rem; font-weight: 800; white-space: nowrap; }
+    .compliant { color: var(--green); background: var(--green-soft); }
+    .conditional { color: var(--orange); background: var(--orange-soft); }
+    .not-compliant { color: var(--red); background: var(--red-soft); }
+    .checklist { margin: 0; padding-left: 20px; }
+    footer { margin-top: 42px; color: var(--muted); font-size: .88rem; }
+    @media (max-width: 820px) {
+      .grid, .subflow { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); }
+      header { padding: 24px; }
+    }
+    @media print {
+      body { background: white; color: black; }
+      .page { width: 100%; padding: 0; }
+      header, .card, .table-wrap { box-shadow: none; break-inside: avoid; }
+      .toc { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>Mobility Insight · Task 1 Overview</h1>
+      <div class="badges">
+        <span class="badge">3 Sources</span>
+        <span class="badge">12-column contract</span>
+        <span class="badge">Asia/Bangkok</span>
+        <span class="badge">Pydantic + Dataclass</span>
+        <span class="badge">Structured JSONL logs</span>
+      </div>
+    </header>
+
+    <nav class="toc" aria-label="สารบัญ">
+      <a href="#flow">Flow</a>
+      <a href="#entrypoints">Entry points</a>
+      <a href="#config">Configuration</a>
+      <a href="#files">File map</a>
+      <a href="#data">Data layers</a>
+      <a href="#quality">Quality controls</a>
+      <a href="#requirements">Requirements</a>
+    </nav>
+
+    <section aria-label="Task 1 summary">
+      <h2>ภาพรวม</h2>
+      <div class="grid">
+        <article class="card"><div class="metric">760</div><div class="muted">records จาก sample data</div></article>
+        <article class="card"><div class="metric">6/6</div><div class="muted">automated tests ผ่าน</div></article>
+        <article class="card"><div class="metric">1</div><div class="muted">parsing implementation: <code>IngestionPipeline.parse_all</code></div></article>
+      </div>
+    </section>
+
+    <section id="flow">
+      <h2>Task 1 flow และการ reuse</h2>
+      <div class="flow" role="img" aria-label="ทุก entry point ใช้ IngestionPipeline.parse_all implementation เดียวกัน">
+        <div class="flow-column">
+          <div class="node"><h3>Notebook / Evaluator</h3><code>submission.parser.parse_all()</code></div>
+          <div class="node"><h3>Operational script</h3><code>scripts/run_task1.py</code></div>
+          <div class="node"><h3>Tests / Direct library</h3><code>IngestionPipeline(...)</code></div>
+        </div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="flow-column">
+          <div class="node primary"><h3>Configuration</h3><code>IngestionPipeline.from_yaml()</code><br><span class="muted">โหลด common.yaml + task1_ingestion.yaml</span></div>
+          <div class="node primary"><h3>Single implementation</h3><code>IngestionPipeline.parse_all()</code></div>
+        </div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="flow-column">
+          <div class="node success"><h3>In-memory output</h3><code>list[dict]</code><br><span class="muted">เรียงตาม vehicle_id, recorded_at</span></div>
+          <div class="node"><h3>Script only</h3><code>pipeline.write_silver(records)</code><br><span class="muted">overwrite / append + deduplicate</span></div>
+        </div>
+      </div>
+      <div class="subflow">
+        <div class="node"><strong>TMTParser</strong><br><span class="muted">0x51 / 0x52 + engine state machine</span></div>
+        <div class="node"><strong>WDMTParser</strong><br><span class="muted">JSON array + registration ID</span></div>
+        <div class="node"><strong>SCGJWDParser</strong><br><span class="muted">CSV/XLSX + IMEI + Y/N engine</span></div>
+      </div>
+      <div class="route-note"><strong>Notebook ไม่เขียนลง data:</strong> เรียก public wrapper และรับผลลัพธ์ใน memory เท่านั้น ส่วน <code>run_task1.py</code> ถือ pipeline instance ไว้เพื่อเขียน Silver และอ่าน <code>last_issues</code></div>
+    </section>
+
+    <section id="entrypoints">
+      <h2>Entry points</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Entry point</th><th>บทบาท</th><th>เรียกอะไรต่อ</th><th>เขียน data?</th></tr></thead>
+          <tbody>
+            <tr><td><code>submission/parser.py</code></td><td>Public wrapper ตาม signature ของโจทย์</td><td><code>IngestionPipeline.from_yaml().parse_all()</code></td><td>ไม่เขียน</td></tr>
+            <tr><td><code>scripts/run_task1.py</code></td><td>Operational CLI</td><td><code>pipeline.parse_all()</code> แล้ว <code>pipeline.write_silver()</code></td><td>เขียน Silver</td></tr>
+            <tr><td><code>notebooks/00_end_to_end_eda.ipynb</code></td><td>EDA และ smoke test ทุก Task</td><td><code>submission.parser.parse_all()</code></td><td>ไม่เขียน</td></tr>
+            <tr><td><code>tests/test_task1_parsers.py</code></td><td>ตรวจ public contract และ internal state</td><td>ใช้ทั้ง wrapper และ pipeline โดยตรง</td><td>เขียนเฉพาะ temp test path</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="config">
+      <h2>Configuration</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ไฟล์</th><th>ค่าหลัก</th><th>Scope</th></tr></thead>
+          <tbody>
+            <tr><td><code>config/common.yaml</code></td><td>Timezone, environment, data paths, log path, log level</td><td>ใช้ร่วมกันทุก Task</td></tr>
+            <tr><td><code>config/task1_ingestion.yaml</code></td><td>TMT event codes, missing/invalid policies, output path, write mode, deduplication</td><td>Task 1</td></tr>
+            <tr><td><code>common/config.py</code></td><td>Pydantic config models และ YAML loader</td><td>Shared implementation</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre><code>missing_source_policy: warn   # ข้าม source ที่ไม่มีและทำ source อื่นต่อ
+invalid_record_policy: skip   # reject เฉพาะ record ที่ผิด
+write_mode: overwrite         # เปลี่ยนเป็น append ได้
+deduplicate: true</code></pre>
+    </section>
+
+    <section id="files">
+      <h2>Task 1 file map</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ประเภท</th><th>ไฟล์</th><th>หน้าที่หลัก</th><th>สถานะ</th></tr></thead>
+          <tbody>
+            <tr><td>Public API</td><td><code>submission/parser.py</code></td><td>Wrapper ตาม deliverable signature</td><td><span class="status core">Core</span></td></tr>
+            <tr><td>Orchestration</td><td><code>task1_ingestion/pipeline.py</code></td><td>เลือก parser, รวมผล, sort, เก็บ issues และเขียน Silver</td><td><span class="status core">Core</span></td></tr>
+            <tr><td>Framework</td><td><code>task1_ingestion/base.py</code></td><td>Parser contract, sanitization, timestamp และ rejection</td><td><span class="status shared">Reused</span></td></tr>
+            <tr><td>Source adapter</td><td><code>parsers/tmt.py</code></td><td>0x51/0x52, CAN mapping, filename fallback, 33/30/34 state</td><td><span class="status core">Core</span></td></tr>
+            <tr><td>Source adapter</td><td><code>parsers/wdmt.py</code></td><td>WDMT JSON → canonical events</td><td><span class="status core">Core</span></td></tr>
+            <tr><td>Source adapter</td><td><code>parsers/scgjwd.py</code></td><td>SCGJWD CSV/XLSX → canonical events</td><td><span class="status core">Core</span></td></tr>
+            <tr><td>Data contract</td><td><code>common/schemas.py</code></td><td>UnifiedGPSEvent, ParsedRecord, ParseIssue, ParseResult</td><td><span class="status shared">Shared</span></td></tr>
+            <tr><td>Configuration</td><td><code>common/config.py</code></td><td>Typed settings และ relative path resolution</td><td><span class="status shared">Shared</span></td></tr>
+            <tr><td>Observability</td><td><code>common/logger.py</code></td><td>Structured JSONL logging</td><td><span class="status shared">Shared</span></td></tr>
+            <tr><td>CLI</td><td><code>scripts/run_task1.py</code></td><td>ค้นหา Bronze inputs และ persist Silver</td><td><span class="status core">Core</span></td></tr>
+            <tr><td>Tests</td><td><code>tests/test_task1_parsers.py</code></td><td>6 scenarios รวม actual-data integration</td><td><span class="status core">Core</span></td></tr>
+            <tr><td>EDA</td><td><code>notebooks/task1/*.ipynb</code></td><td>สำรวจแต่ละ source โดย reuse public API</td><td><span class="status optional">EDA</span></td></tr>
+            <tr><td>EDA</td><td><code>notebooks/00_end_to_end_eda.ipynb</code></td><td>In-memory flow Task 1 → 2 → 3</td><td><span class="status optional">EDA</span></td></tr>
+            <tr><td>Documentation</td><td><code>submission/README.md</code></td><td>Run guide, assumptions และ known limitations</td><td><span class="status core">Required</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="data">
+      <h2>Data layers และ outputs</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Layer</th><th>Path</th><th>เนื้อหา</th><th>พฤติกรรม</th></tr></thead>
+          <tbody>
+            <tr><td>Bronze</td><td><code>data/bronze/tm*.json</code></td><td>Raw TMT 0x51/0x52</td><td>Read-only</td></tr>
+            <tr><td>Bronze</td><td><code>data/bronze/wdmt.json</code></td><td>Raw WDMT array</td><td>Read-only</td></tr>
+            <tr><td>Bronze</td><td><code>data/bronze/scgjwd.csv</code></td><td>Raw SCGJWD rows</td><td>Read-only</td></tr>
+            <tr><td>Silver</td><td><code>data/silver/unified_events/unified_events.parquet</code></td><td>12-column canonical events</td><td>Overwrite หรือ append + deduplicate</td></tr>
+            <tr><td>Silver optional</td><td><code>data/silver/tmt_can_timeseries/</code></td><td>Dense per-second CAN samples</td><td>Reserved; ยังไม่ implement</td></tr>
+            <tr><td>Quarantine</td><td><code>data/quarantine/rejected_records/</code></td><td>Invalid records</td><td>Reserved; issues ปัจจุบันอยู่ใน memory/log</td></tr>
+            <tr><td>Logs</td><td><code>logs/task1_ingestion.jsonl</code></td><td>Source counts, skips, fallback IDs และ failures</td><td>Append</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="quality">
+      <h2>Quality controls</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Sanitization</h3>
+          <ul class="checklist">
+            <li><code>"-"</code>, blank, null token → <code>None</code></li>
+            <li><code>"0.000"</code> → <code>0.0</code> ไม่ใช่ missing</li>
+            <li>Y/N, 1/0 และ true/false → boolean</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Pydantic validation</h3>
+          <ul class="checklist">
+            <li>Vehicle ID ต้องไม่ว่าง</li>
+            <li>Timestamp ต้อง timezone-aware</li>
+            <li>Lat/lon และ non-negative metrics อยู่ในช่วงที่ถูกต้อง</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Resilience</h3>
+          <ul class="checklist">
+            <li>Source มาไม่ครบยังรันได้ใน warn mode</li>
+            <li>Bad row ไม่หยุด valid rows</li>
+            <li>Append rerun ไม่เพิ่ม exact duplicates</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="requirements">
+      <h2>Requirement compliance check</h2>
+      <p class="muted"><strong>Compliant</strong> = implement และตรวจสอบได้ครบ; <strong>Compliant with conditions</strong> = logic รองรับ แต่ supplied input หรือ external condition ยังไม่ครบ; <strong>Not compliant</strong> = ยังไม่มี implementation หรือหลักฐานขัดกับ requirement.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Requirement</th><th>Implementation evidence</th><th>Notes</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>vehicle_id</code> มาจาก source และไม่ hardcode</td>
+              <td>WDMT ใช้ <code>registration</code>; SCGJWD ใช้ <code>IMEI</code>; TMT ค้นหา vehicle ID, IMEI, VIN, chassis, registration และ device ID ใน payload ก่อน</td>
+              <td>TMT sample ไม่มี usable source-field identifier จึงใช้ provisional filename token และ log <code>tmt_vehicle_id_fallback</code>; production ต้องรับ immutable partner ID และใช้ fallback policy <code>error</code></td>
+              <td><span class="compliance conditional">Compliant with conditions</span></td>
+            </tr>
+            <tr>
+              <td><code>recorded_at</code> ต้อง timezone-aware และ UTC+7</td>
+              <td><code>BaseParser</code> ใช้ <code>ZoneInfo("Asia/Bangkok")</code> จาก YAML และ <code>UnifiedGPSEvent</code> ปฏิเสธ naive datetime</td>
+              <td>รูปแบบ timestamp ของทั้งสาม sources ถูก localize เป็น UTC+7; Silver มี dtype <code>datetime64[us, Asia/Bangkok]</code></td>
+              <td><span class="compliance compliant">Compliant</span></td>
+            </tr>
+            <tr>
+              <td>TMT Engine ON/OFF ต้อง derive ข้าม 0x51 และ 0x52</td>
+              <td>รวม records ทุก packet, แยกตาม vehicle, เรียงเวลา แล้วใช้ state machine: <code>33 → True</code>, <code>30 → preserve</code>, <code>34 → False</code></td>
+              <td>ไม่ใช้ <code>engine_on = event_type == 33</code>; heartbeat ไม่ถูกตีความเป็น engine-off</td>
+              <td><span class="compliance compliant">Compliant</span></td>
+            </tr>
+            <tr>
+              <td>รองรับ <code>null</code>, <code>"-"</code>, <code>0.000</code> และ missing fields</td>
+              <td>Sanitization แปลง null tokens เป็น <code>None</code>, เก็บ <code>0.000</code> เป็น <code>0.0</code>, แล้ว validate ด้วย Pydantic</td>
+              <td>Optional field ที่หายเป็น <code>None</code>; invalid required field ถูก reject เฉพาะ record และ log โดยไม่หยุดทั้ง pipeline ใน skip mode</td>
+              <td><span class="compliance compliant">Compliant</span></td>
+            </tr>
+            <tr>
+              <td>Output ต้องเรียงตาม <code>(vehicle_id, recorded_at)</code></td>
+              <td><code>IngestionPipeline.parse_all()</code> sort ก่อนแปลงเป็น <code>list[dict]</code></td>
+              <td>มี automated test เทียบผลกับ Python <code>sorted()</code></td>
+              <td><span class="compliance compliant">Compliant</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    <footer>
+      Mobility Insight Task 1 documentation 
+    </footer>
+  </main>
+</body>
+</html>

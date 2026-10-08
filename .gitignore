@@ -1,0 +1,22 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Tool caches and notebook checkpoints
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Runtime outputs
+logs/*.jsonl
+data/silver/**/*.parquet
+data/gold/**/*.parquet
+data/quarantine/rejected_records/*
+!data/quarantine/rejected_records/.gitkeep

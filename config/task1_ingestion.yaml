@@ -1,0 +1,16 @@
+ingestion:
+  missing_source_policy: warn   # warn | error
+  invalid_record_policy: skip   # skip | error
+
+tmt:
+  event_codes:
+    engine_on: "33"
+    heartbeat: "30"
+    engine_off: "34"
+  vehicle_id_fallback: filename
+
+output:
+  path: data/silver/unified_events/unified_events.parquet
+  format: parquet
+  write_mode: overwrite         # overwrite | append
+  deduplicate: true

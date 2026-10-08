@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobility Insight — Task 2 Overview</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-soft: #edf5ff;
+      --text: #172033;
+      --muted: #5e6b80;
+      --line: #d8e1ed;
+      --primary: #155eef;
+      --primary-soft: #e7efff;
+      --green: #087a55;
+      --green-soft: #e4f6ee;
+      --orange: #a45100;
+      --orange-soft: #fff0df;
+      --purple: #6941c6;
+      --purple-soft: #f0eaff;
+      --code: #101828;
+      --code-text: #eaecf0;
+      --shadow: 0 8px 28px rgba(31, 45, 72, .08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e1420;
+        --surface: #151d2b;
+        --surface-soft: #182641;
+        --text: #eef3fb;
+        --muted: #a7b1c2;
+        --line: #2c384a;
+        --primary: #82aaff;
+        --primary-soft: #1b315f;
+        --green: #69d8ae;
+        --green-soft: #12372f;
+        --orange: #ffb968;
+        --orange-soft: #452c14;
+        --purple: #c4a7ff;
+        --purple-soft: #302255;
+        --code: #090d14;
+        --code-text: #edf2f7;
+        --shadow: none;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.62;
+    }
+    .page { width: min(1220px, calc(100% - 32px)); margin: 0 auto; padding: 36px 0 64px; }
+    header {
+      padding: 32px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, var(--surface), var(--surface-soft));
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+    h1, h2, h3 { line-height: 1.25; margin-top: 0; }
+    h1 { margin-bottom: 8px; font-size: clamp(1.85rem, 4vw, 2.65rem); }
+    h2 { margin: 42px 0 16px; font-size: 1.48rem; }
+    h3 { font-size: 1.02rem; margin-bottom: 8px; }
+    p { margin: 0 0 12px; }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code { font-family: "Cascadia Code", Consolas, monospace; font-size: .9em; }
+    pre {
+      margin: 14px 0 0;
+      padding: 16px;
+      overflow-x: auto;
+      background: var(--code);
+      color: var(--code-text);
+      border-radius: 12px;
+    }
+    .subtitle { color: var(--muted); max-width: 900px; }
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .badge {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: .84rem;
+      font-weight: 700;
+    }
+    .toc { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 18px 4px 0; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .card.accent { border-top: 4px solid var(--primary); }
+    .metric { font-size: 1.8rem; font-weight: 780; color: var(--primary); }
+    .muted { color: var(--muted); }
+    .flow {
+      display: grid;
+      grid-template-columns: minmax(160px, .9fr) 36px minmax(200px, 1.1fr) 36px minmax(220px, 1.2fr) 36px minmax(170px, .9fr);
+      align-items: stretch;
+      gap: 8px;
+    }
+    .flow-column { display: grid; align-content: center; gap: 9px; }
+    .node {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+    .node.primary { border-color: var(--primary); background: var(--primary-soft); }
+    .node.success { border-color: var(--green); background: var(--green-soft); }
+    .node.purple { border-color: var(--purple); background: var(--purple-soft); }
+    .arrow { align-self: center; justify-self: center; color: var(--primary); font-size: 1.55rem; }
+    .branch {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--orange);
+      background: var(--orange-soft);
+      border-radius: 8px;
+    }
+    .success-note { border-left-color: var(--green); background: var(--green-soft); }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 820px; }
+    th, td { padding: 11px 13px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+    th {
+      background: var(--surface-soft);
+      color: var(--muted);
+      font-size: .79rem;
+      text-transform: uppercase;
+      letter-spacing: .035em;
+      white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: 0; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .status { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: .77rem; font-weight: 750; }
+    .core { color: var(--primary); background: var(--primary-soft); }
+    .shared { color: var(--green); background: var(--green-soft); }
+    .config { color: var(--purple); background: var(--purple-soft); }
+    .optional { color: var(--orange); background: var(--orange-soft); }
+    .null { color: var(--muted); font-style: italic; }
+    .steps { counter-reset: step; display: grid; gap: 12px; }
+    .step { position: relative; padding: 15px 16px 15px 58px; }
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 16px;
+      top: 15px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--primary);
+      color: white;
+      font-weight: 750;
+    }
+    footer { margin-top: 42px; color: var(--muted); font-size: .88rem; }
+    @media (max-width: 940px) {
+      .grid, .grid.four, .branch { grid-template-columns: 1fr 1fr; }
+      .flow { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); }
+    }
+    @media (max-width: 620px) {
+      .grid, .grid.four, .branch { grid-template-columns: 1fr; }
+      header { padding: 23px; }
+    }
+    @media print {
+      body { background: white; color: black; }
+      .page { width: 100%; padding: 0; }
+      header, .card, .table-wrap { box-shadow: none; break-inside: avoid; }
+      .toc { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>Mobility Insight · Task 2 Overview</h1>
+    </header>
+
+    <nav class="toc" aria-label="สารบัญ">
+      <a href="#workflow">Workflow</a>
+      <a href="#rules">Segmentation rules</a>
+      <a href="#features">Feature logic</a>
+      <a href="#files">File documentation</a>
+      <a href="#results">Notebook results</a>
+      <a href="#interpretation">Interpretation</a>
+      <a href="#usage">Usage</a>
+    </nav>
+
+    <section id="workflow">
+      <h2>1. Task 2 workflow</h2>
+      <div class="flow" aria-label="Task 2 data flow">
+        <div class="flow-column">
+          <div class="node">
+            <strong>Notebook / Assignment</strong><br>
+            <code>build_trip_features(stream)</code>
+          </div>
+          <div class="node">
+            <strong>Batch script</strong><br>
+            <code>run_task2.py</code>
+          </div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-column">
+          <div class="node primary">
+            <strong>TripFeatureExtractor</strong><br>
+            โหลด YAML, validate, group และ orchestrate
+          </div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-column">
+          <div class="node purple"><strong>TripSegmenter</strong><br>แบ่ง candidate trips ตาม engine/gap</div>
+          <div class="node purple"><strong>Harsh Events</strong><br>คำนวณ acceleration จากช่วงเวลาจริง</div>
+          <div class="node purple"><strong>Feature Extraction</strong><br>สร้าง TripFeature 1 แถวต่อ 1 trip</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-column">
+          <div class="node success">
+            <strong>pandas DataFrame</strong><br>
+            ส่งต่อ Task 3 หรือ EDA
+          </div>
+          <div class="node">
+            <strong>Gold Parquet</strong><br>
+            เขียนเฉพาะเมื่อเรียก script
+          </div>
+        </div>
+      </div>
+
+      <div class="branch">
+        <div class="card accent">
+          <h3>เส้นทาง Notebook</h3>
+          <p><code>submission.features.build_trip_features()</code> เป็น public entry point ที่ส่งงานต่อไปยัง <code>TripFeatureExtractor.transform()</code></p>
+          <p class="muted">ทำงานใน memory และไม่เขียน Silver/Gold</p>
+        </div>
+        <div class="card accent">
+          <h3>เส้นทาง Script</h3>
+          <p><code>run_task2.py</code> อ่าน Silver Parquet แล้วเรียก <code>transform()</code> ตัวเดียวกับ notebook ก่อนเรียก <code>write_gold()</code></p>
+          <p class="muted">รองรับ overwrite และ append</p>
+        </div>
+        <div class="card accent">
+          <h3>Single implementation</h3>
+          <p>กฎ segmentation และ feature calculation ไม่มีสำเนาอยู่ใน wrapper หรือ notebook จึงลดปัญหา logic แต่ละ entry point ไม่ตรงกัน</p>
+        </div>
+      </div>
+
+      <div class="steps" style="margin-top: 16px">
+        <div class="card step"><strong>Validate &amp; normalize</strong> — ตรวจแต่ละ record ด้วย <code>UnifiedGPSEvent</code>, แปลงเวลาเป็น timezone ของโครงการ และ sort ตาม source, vehicle, timestamp</div>
+        <div class="card step"><strong>Group vehicle stream</strong> — ประมวลผลแยกตาม <code>(source, vehicle_id)</code> เพื่อไม่ให้ข้อมูลต่างรถปะปนกัน</div>
+        <div class="card step"><strong>Segment trips</strong> — เลือก engine-aware state machine เมื่อมี engine state หรือใช้ GPS gap fallback เมื่อ engine state ไม่มีทั้ง stream</div>
+        <div class="card step"><strong>Discard noise</strong> — ทิ้ง candidate segment ที่สั้นกว่า minimum duration จาก YAML</div>
+        <div class="card step"><strong>Extract &amp; validate features</strong> — คำนวณระยะทาง, ความเร็ว, harsh events, idle, time-of-day, CAN averages และตรวจ output ด้วย <code>TripFeature</code></div>
+        <div class="card step"><strong>Return or persist</strong> — public API คืน DataFrame; batch script จึงค่อยเขียน Gold ตาม write mode</div>
+      </div>
+    </section>
+
+    <section id="rules">
+      <h2>2. Segmentation rules และ configuration</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rule</th><th>ค่าเริ่มต้น</th><th>พฤติกรรม</th><th>ที่มา</th></tr></thead>
+          <tbody>
+            <tr><td>Trip start</td><td><code>engine_on → True</code></td><td>เริ่ม trip เมื่อ state เปลี่ยนเข้า ON; แถว ON แรกเป็นจุดเริ่ม</td><td>Assignment rule</td></tr>
+            <tr><td>Trip end</td><td><code>engine_on → False</code></td><td>รวมแถว OFF เป็นจุดสุดท้ายแล้วปิด trip</td><td>Assignment rule</td></tr>
+            <tr><td>Timeout</td><td>มากกว่า 10 นาที</td><td>ปิด active trip เมื่อ gap ระหว่าง record ต่อเนื่องเกิน threshold</td><td><code>segmentation.gap_minutes</code></td></tr>
+            <tr><td>Minimum duration</td><td>2 นาที</td><td>ทิ้ง segment ที่สั้นกว่า threshold เป็น noise</td><td><code>segmentation.minimum_duration_minutes</code></td></tr>
+            <tr><td>GPS-only fallback</td><td>เปิด</td><td>เมื่อทั้ง stream ไม่มี engine state ให้แบ่งด้วย gap เพื่อรองรับ Grade B</td><td><code>segmentation.enable_gps_fallback</code></td></tr>
+            <tr><td>Open trip at EOF</td><td>ปิดเป็น trip</td><td>active segment สุดท้ายใช้ reason <code>stream_end</code></td><td><code>segmentation.close_open_trip_at_stream_end</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <strong>เหตุผลที่ต้องมี GPS fallback:</strong> Task 1 อนุญาต <code>engine_on=None</code> สำหรับแหล่งข้อมูลที่ไม่มี engine signal หากบังคับ engine transition เพียงอย่างเดียว WDMT จะไม่มี trip เลย จึงใช้ gap fallback พร้อมบันทึก <code>segmentation_method</code> เพื่อให้ผู้ใช้ทราบว่าเป็นผลอนุมาน
+      </div>
+    </section>
+
+    <section id="features">
+      <h2>3. Feature extraction logic</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>วิธีคำนวณ</th><th>Fallback / Null behavior</th></tr></thead>
+          <tbody>
+            <tr><td><code>trip_duration_min</code></td><td><code>trip_end - trip_start</code> เป็นนาที</td><td>segment ต่ำกว่า 2 นาทีถูกทิ้งก่อนสร้าง feature</td></tr>
+            <tr><td><code>distance_km</code></td><td>ใช้ odometer delta ที่ valid และไม่ติดลบ</td><td>ถ้าใช้ไม่ได้ ให้รวม Haversine distance ระหว่าง GPS points</td></tr>
+            <tr><td><code>avg_speed_kmh</code></td><td>ค่าเฉลี่ย speed ทุก record ใน trip</td><td>numeric coercion ผ่าน input contract</td></tr>
+            <tr><td><code>max_speed_kmh</code></td><td>ค่าสูงสุดของ speed</td><td>ต้องไม่ติดลบตาม Pydantic contract</td></tr>
+            <tr><td><code>speed_variance</code></td><td>population variance (<code>ddof=0</code>)</td><td>trip ที่มีค่าเดียวได้ 0</td></tr>
+            <tr><td><code>harsh_accel_count</code></td><td>acceleration ≥ 3.0 m/s² จาก actual timestamp delta</td><td>ค่าเริ่มต้นคำนวณเฉพาะ Grade A; Grade B เป็น null</td></tr>
+            <tr><td><code>harsh_brake_count</code></td><td>acceleration ≤ −3.5 m/s² จาก actual timestamp delta</td><td>ไม่นับคู่ข้อมูลที่ห่างเกิน 5 วินาที</td></tr>
+            <tr><td><code>idle_ratio</code></td><td>สัดส่วนเวลาแบบ time-weighted ที่ engine ON และ speed = 0</td><td>เป็น null เมื่อไม่ทราบ engine state</td></tr>
+            <tr><td><code>time_of_day_risk</code></td><td>จัดกลุ่มจากเวลาเริ่ม trip: night / peak / offpeak</td><td>ช่วงเวลาทั้งหมดอยู่ใน YAML</td></tr>
+            <tr><td><code>avg_fuel_rate_lh</code></td><td>mean ของ fuel rate ที่มีค่า</td><td>null เมื่อไม่มี CAN</td></tr>
+            <tr><td><code>avg_rpm</code></td><td>mean ของ engine RPM ที่มีค่า</td><td>null เมื่อไม่มี CAN</td></tr>
+            <tr><td><code>data_grade</code></td><td>A เมื่อ trip มี CAN signal อย่างน้อยหนึ่งชนิด มิฉะนั้น B</td><td>ทำให้ Task 3 แยก scoring strategy ได้</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="files">
+      <h2>4. เอกสารไฟล์ที่เกี่ยวข้อง</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ไฟล์</th><th>ประเภท</th><th>หน้าที่หลัก</th><th>สิ่งสำคัญ</th></tr></thead>
+          <tbody>
+            <tr><td><code>submission/features.py</code></td><td><span class="status core">Public API</span></td><td>ประกาศ signature <code>build_trip_features(unified_stream)</code> ตามโจทย์</td><td>ส่งต่อไปยัง implementation ใน <code>src</code>; ไม่เก็บ business logic และไม่เขียนไฟล์</td></tr>
+            <tr><td><code>src/mobility/task2_features/feature_extractor.py</code></td><td><span class="status core">Core</span></td><td>orchestrate validation, grouping, segmentation และการรวม features</td><td><code>transform()</code> เป็น implementation กลาง; <code>write_gold()</code> แยก persistence ออกมา</td></tr>
+            <tr><td><code>src/mobility/task2_features/segmenter.py</code></td><td><span class="status core">Core</span></td><td>engine-aware state machine และ GPS gap fallback</td><td><code>TripSegment</code> dataclass เก็บ events, method และ end reason</td></tr>
+            <tr><td><code>src/mobility/task2_features/harsh_events.py</code></td><td><span class="status core">Core</span></td><td>ตรวจ harsh acceleration/braking จาก speed delta ต่อ time delta จริง</td><td>แยก pure calculation เพื่อเปลี่ยน threshold หรือ strategy ได้ง่าย</td></tr>
+            <tr><td><code>src/mobility/task2_features/__init__.py</code></td><td><span class="status shared">Package</span></td><td>กำหนด public export ของ package</td><td>export เฉพาะ <code>TripFeatureExtractor</code> เพื่อลด surface area</td></tr>
+            <tr><td><code>config/task2_features.yaml</code></td><td><span class="status config">Config</span></td><td>รวม segmentation, harsh, idle, time windows, output และ logging settings</td><td>ปรับ rule ได้โดยไม่แก้ source code</td></tr>
+            <tr><td><code>src/mobility/common/config.py</code></td><td><span class="status shared">Common</span></td><td>Pydantic models และ loader สำหรับ Task 2 YAML</td><td>validate ค่า เช่น threshold ต้องเป็นบวกและ write mode ต้องอยู่ในค่าที่รองรับ</td></tr>
+            <tr><td><code>src/mobility/common/schemas.py</code></td><td><span class="status shared">Contract</span></td><td><code>UnifiedGPSEvent</code> input และ <code>TripFeature</code> output contracts</td><td>ห้าม extra fields, ตรวจ timezone, range และ end ≥ start</td></tr>
+            <tr><td><code>src/mobility/common/geo_utils.py</code></td><td><span class="status shared">Common</span></td><td>Haversine distance utility</td><td>reuse เมื่อ odometer ใช้ไม่ได้</td></tr>
+            <tr><td><code>src/mobility/common/logger.py</code></td><td><span class="status shared">Common</span></td><td>structured JSONL logging</td><td>บันทึก rejected input, short trips และ write result</td></tr>
+            <tr><td><code>scripts/run_task2.py</code></td><td><span class="status optional">Batch entry</span></td><td>อ่าน Silver, เรียก core extractor และเขียน Gold</td><td>เป็น entry point เดียวที่ persist output ตามปกติ</td></tr>
+            <tr><td><code>notebooks/00_end_to_end_eda.ipynb</code></td><td><span class="status optional">EDA</span></td><td>ทดสอบ public APIs ของ Task 1 → 2 → 3 ใน memory</td><td>ผลที่แสดงในหัวข้อถัดไปมาจาก notebook นี้</td></tr>
+            <tr><td><code>notebooks/task2/01_trip_segmentation_experiments.ipynb</code></td><td><span class="status optional">EDA</span></td><td>ทดลอง boundary strategies และ gap thresholds ก่อนเลือก segmentation rule</td><td>เทียบกับ production <code>TripSegmenter</code> และไม่เขียนข้อมูล</td></tr>
+            <tr><td><code>notebooks/task2/02_trip_features_eda.ipynb</code></td><td><span class="status optional">EDA</span></td><td>วิเคราะห์ผล segmentation, feature statistics และ null coverage</td><td>ไม่เรียก <code>write_gold()</code></td></tr>
+            <tr><td><code>tests/test_task2_features.py</code></td><td><span class="status shared">Tests</span></td><td>ทดสอบ rules, boundary, calculations, invalid input และ append idempotency</td><td>รวมใน test suite ที่ผ่าน 22 tests</td></tr>
+            <tr><td><code>data/gold/trip_features/trip_features.parquet</code></td><td><span class="status optional">Gold</span></td><td>ผล one-row-per-trip สำหรับ batch workflow</td><td>ไม่ถูกสร้างหรือแก้ไขโดย EDA notebook</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="results">
+      <h2>5. ผลลัพธ์จาก end-to-end notebook</h2>
+      <p class="muted">Snapshot จาก output ที่บันทึกอยู่ใน <code>notebooks/00_end_to_end_eda.ipynb</code> โดยข้อมูลเหตุการณ์เป็นวันที่ 1 มีนาคม 2026 และ timezone <code>Asia/Bangkok</code>.</p>
+
+      <div class="grid four">
+        <div class="card"><div class="metric">760</div><strong>Unified events</strong><p class="muted">Task 1 input records</p></div>
+        <div class="card"><div class="metric">5</div><strong>Valid trips</strong><p class="muted">หลัง discard short segments</p></div>
+        <div class="card"><div class="metric">21</div><strong>Output columns</strong><p class="muted">TripFeature contract</p></div>
+        <div class="card"><div class="metric">100%</div><strong>Grade B</strong><p class="muted">5 จาก 5 trips</p></div>
+      </div>
+
+      <h3 style="margin-top: 24px">Trip-level snapshot</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Source / vehicle</th><th>Start → End</th><th>Records</th><th>Segmentation</th><th>Duration</th><th>Distance</th><th>Avg / Max speed</th><th>Idle</th><th>Grade</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>SCGJWD</strong><br><code>001000000111002</code></td>
+              <td>07:00 → 07:45<br><span class="muted">engine_off</span></td>
+              <td class="num">46</td><td>engine_and_gap</td><td class="num">45 min</td>
+              <td class="num">2.729 km<br><span class="muted">haversine</span></td>
+              <td class="num">18.28 / 40 km/h</td><td class="num">24.44%</td><td>B</td>
+            </tr>
+            <tr>
+              <td><strong>SCGJWD</strong><br><code>001000000111003</code></td>
+              <td>07:30 → 08:29<br><span class="muted">stream_end</span></td>
+              <td class="num">60</td><td>engine_and_gap</td><td class="num">59 min</td>
+              <td class="num">9.159 km<br><span class="muted">haversine</span></td>
+              <td class="num">94.52 / 110 km/h</td><td class="num">0.00%</td><td>B</td>
+            </tr>
+            <tr>
+              <td><strong>WDMT</strong><br><code>5กข-1122</code></td>
+              <td>07:00 → 09:00<br><span class="muted">stream_end</span></td>
+              <td class="num">241</td><td>gps_gap_fallback</td><td class="num">120 min</td>
+              <td class="num">0.749 km<br><span class="muted">odometer</span></td>
+              <td class="num">22.37 / 50 km/h</td><td class="null">null</td><td>B</td>
+            </tr>
+            <tr>
+              <td><strong>WDMT</strong><br><code>6งจ-3344</code></td>
+              <td>07:00 → 09:00<br><span class="muted">stream_end</span></td>
+              <td class="num">121</td><td>gps_gap_fallback</td><td class="num">120 min</td>
+              <td class="num">3.151 km<br><span class="muted">odometer</span></td>
+              <td class="num">94.40 / 110 km/h</td><td class="null">null</td><td>B</td>
+            </tr>
+            <tr>
+              <td><strong>WDMT</strong><br><code>7ดต-5566</code></td>
+              <td>08:00 → 09:00<br><span class="muted">stream_end</span></td>
+              <td class="num">241</td><td>gps_gap_fallback</td><td class="num">60 min</td>
+              <td class="num">3.103 km<br><span class="muted">haversine</span></td>
+              <td class="num">62.03 / 90 km/h</td><td class="null">null</td><td>B</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top: 24px">Aggregate summary</h3>
+      <div class="grid">
+        <div class="card">
+          <h3>Segmentation methods</h3>
+          <p><strong>3</strong> GPS gap fallback</p>
+          <p><strong>2</strong> engine and gap</p>
+        </div>
+        <div class="card">
+          <h3>Duration &amp; distance</h3>
+          <p>Average duration: <strong>80.8 min</strong></p>
+          <p>Average distance: <strong>3.778 km</strong></p>
+        </div>
+        <div class="card">
+          <h3>Speed</h3>
+          <p>Average trip speed mean: <strong>58.32 km/h</strong></p>
+          <p>Highest max speed: <strong>110 km/h</strong></p>
+        </div>
+      </div>
+      <div class="note success-note">
+        <strong>Notebook status:</strong> Task 1 = OK — 760 events, Task 2 = OK — 5 trips, Task 3 = OK — 2 methods / 5 trip scores / 5 vehicle scores. Notebook ทำงานใน memory และไม่ได้เขียน dataset ลง Silver หรือ Gold
+      </div>
+    </section>
+
+    <section id="interpretation">
+      <h2>6. ข้อสังเกตุ</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Trip เป็น Grade B?</h3>
+          <p>Trip ที่ผ่าน minimum duration ไม่มี CAN signal ภายใน segment แม้ dataset รวมจะมีข้อมูล TMT บางส่วน จึงไม่ควรเติมค่า CAN</p>
+        </div>
+        <div class="card">
+          <h3>Harsh counts เป็น null?</h3>
+          <p>ค่าเริ่มต้น <code>grade_a_only=true</code> เพื่อหลีกเลี่ยงการนับ harsh event จาก GPS sampling ที่อาจหยาบหรือไม่สม่ำเสมอ จึงใช้ null เพื่อสื่อว่า “ไม่สามารถประเมินอย่างน่าเชื่อถือ” ไม่ใช่ศูนย์เหตุการณ์</p>
+        </div>
+        <div class="card">
+          <h3>WDMT idle เป็น null</h3>
+          <p>นิยาม idle ต้องมี engine ON และ speed = 0 แต่ WDMT ไม่มี engine state การคืน null</p>
+        </div>
+      </div>
+      <div class="note">
+        ค่าเฉลี่ยความเร็วสูงแต่ระยะทาง odometer ต่ำในบาง WDMT trip เป็นสัญญาณ data-quality ที่ควรตรวจ upstream เพิ่มเติม ระบบยังคงทั้ง <code>distance_method</code> และค่าความเร็วไว้เพื่อให้ audit ได้ แทนการแก้ข้อมูลเงียบ ๆ
+      </div>
+    </section>
+
+    <section id="usage">
+      <h2>7. วิธีเรียกใช้งาน</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Public API / Notebook</h3>
+          <pre><code>from submission.features import build_trip_features
+
+trip_features = build_trip_features(unified_stream)</code></pre>
+          <p class="muted" style="margin-top: 10px">คืน DataFrame และไม่เขียนไฟล์</p>
+        </div>
+        <div class="card">
+          <h3>Batch pipeline</h3>
+          <pre><code>uv run python scripts/run_task2.py</code></pre>
+          <p class="muted" style="margin-top: 10px">อ่าน Silver และเขียน Gold ตาม YAML</p>
+        </div>
+        <div class="card">
+          <h3>Verification</h3>
+          <pre><code>uv run pytest tests/test_task2_features.py</code></pre>
+          <p class="muted" style="margin-top: 10px">ครอบคลุม segmentation, features, null behavior และ persistence</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Mobility Insight · Task 2 technical overview
+    </footer>
+  </main>
+</body>
+</html>
