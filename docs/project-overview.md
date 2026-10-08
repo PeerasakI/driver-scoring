@@ -1,15 +1,15 @@
 MOBILITY INSIGHT PROJECT OVERVIEW
 =================================
 
-1. เป้าหมายของงาน
------------------
+# 1. เป้าหมายของงาน
 
 โปรเจกต์นี้แปลงข้อมูล telematics จากผู้ให้บริการ 3 แหล่งให้เป็นข้อมูลมาตรฐาน
 จากนั้นแบ่งข้อมูลเป็น trip, สร้าง trip features และคำนวณคะแนนความปลอดภัย
 ระดับรถหรือผู้ขับขี่ โดยออกแบบให้รองรับข้อมูลที่มีรายละเอียดไม่เท่ากัน
 
-ลำดับการทำงานหลัก
+## ลำดับการทำงานหลัก
 
+```text
 Bronze raw files
   -> Task 1: Parse and Unify
   -> Unified GPS Event Stream / Silver
@@ -17,26 +17,54 @@ Bronze raw files
   -> Trip Features / Gold
   -> Task 3: Trip Risk Score
   -> Cold-start-adjusted Vehicle Score
+```
 
-Task 4 เป็นเอกสารเสนอแนวทางนำระบบไปใช้งานใน production เช่น streaming,
+## Task 4 เป็นเอกสารเสนอแนวทางนำระบบไปใช้งานใน production เช่น streaming,
 privacy, spatial aggregation, scale และ model lifecycle
 
 
-2. แหล่งข้อมูลต้นทาง
--------------------
+# 2. โครงสร้างโฟลเดอร์ระดับบน
 
-data/bronze/tm*.json
+Project root: `mobility-insight_task/`
+
+ตารางนี้แสดงเฉพาะโฟลเดอร์ที่อยู่ใต้ project root หนึ่งระดับ โดยไม่ลงรายละเอียด
+subfolder ภายในแต่ละโฟลเดอร์
+
+| Folder | หน้าที่ | ประเภท |
+|---|---|---|
+| `.git/` | เก็บ Git metadata และประวัติการเปลี่ยนแปลงของ repository | เครื่องมือพัฒนา |
+| `.mypy_cache/` | Cache จากการตรวจ static type; ลบแล้วสร้างใหม่ได้ | Generated cache |
+| `.pytest_cache/` | Cache จากการรัน pytest; ลบแล้วสร้างใหม่ได้ | Generated cache |
+| `.venv/` | Python virtual environment และ dependencies ของเครื่องนี้ | Local environment |
+| `articles/` | เก็บบทความและงานวิจัยที่ใช้อ้างอิงการออกแบบ scoring | Reference material |
+| `config/` | เก็บ YAML configuration แยกตาม task และค่าที่ใช้ร่วมกัน | Configuration |
+| `data/` | เก็บข้อมูลตาม Medallion layers: Bronze, Silver และ Gold | Data storage |
+| `docs/` | เก็บเอกสารภาพรวม, EDA report และ HTML overview ของแต่ละ task | Documentation |
+| `logs/` | เก็บ structured JSONL logs ที่เกิดจากการรัน pipeline | Runtime output |
+| `notebooks/` | เก็บ Jupyter notebooks สำหรับ EDA และการทดลองแบบ in-memory | Exploration |
+| `scripts/` | เก็บ command-line runners สำหรับรัน batch pipeline และเขียน output | Operations |
+| `src/` | เก็บ production implementation ของ ingestion, features และ scoring | Application source |
+| `submission/` | เก็บ public entry points และเอกสาร deliverables ตามโจทย์ | Submission interface |
+| `tests/` | เก็บ automated tests ของ Task 1, Task 2 และ Task 3 | Quality assurance |
+
+
+
+
+# 3. แหล่งข้อมูลต้นทาง
+
+
+## data/bronze/tm*.json
   ข้อมูล Toyota TMT มี packet 0x51 และ 0x52
   มี GPS, event code และ CAN signals บางรายการ
   สถานะเครื่องยนต์ต้อง derive จาก event code ตามลำดับเวลา
   ไม่สามารถใช้ event_type เป็นค่า ON/OFF ของแต่ละแถวโดยตรง
 
-data/bronze/wdmt.json
+## data/bronze/wdmt.json
   ข้อมูล WDMT / True Leasing
   ใช้ registration เป็น vehicle_id
   เป็นข้อมูล GPS-only และไม่มีสถานะเครื่องยนต์ที่เชื่อถือได้
 
-data/bronze/scgjwd.csv
+## data/bronze/scgjwd.csv
   ข้อมูล SCGJWD Logistics
   ใช้ IMEI เป็น vehicle_id
   มีข้อมูล GPS และสถานะเครื่องยนต์
@@ -45,201 +73,193 @@ data/bronze/scgjwd.csv
 พฤติกรรมเมื่อ source หายกำหนดได้จาก config/task1_ingestion.yaml
 
 
-3. โครงสร้างข้อมูล
------------------
+# 4. โครงสร้างข้อมูล
 
-data/bronze/
+## data/bronze/
   เก็บ raw input จาก partner โดยยังไม่ปรับ schema
 
-data/silver/
+## data/silver/
   เก็บ Unified GPS Event Stream จาก Task 1
   หนึ่งแถวแทนหนึ่งเหตุการณ์ของรถหลังผ่าน validation และ normalization
 
-data/gold/
+## data/gold/
   เก็บข้อมูลระดับ trip และ features ที่ Task 2 สร้างขึ้น
 
-Notebook สำหรับ EDA ใช้ข้อมูลใน memory และไม่เรียกฟังก์ชันเขียน Silver หรือ Gold
-เว้นแต่ผู้ใช้เรียก persistence function เองอย่างชัดเจน
 
+# 5. Common layer
 
-4. Common layer
----------------
-
-src/mobility/common/config.py
+## src/mobility/common/config.py
   อ่าน YAML และ validate configuration ด้วย Pydantic
   รวม settings models ของ Task 1, Task 2 และ Task 3
   แต่ละ task ใช้ config ของตนเองและใช้ common.yaml ร่วมกัน
 
-src/mobility/common/schemas.py
+## src/mobility/common/schemas.py
   เก็บ data contracts และ enums ที่ใช้ร่วมกัน
   model สำคัญ ได้แก่ UnifiedGPSEvent, TripFeature, TripRisk และ DriverRisk
   ช่วยตรวจชนิดข้อมูล, timezone, ช่วงคะแนน และค่าที่อนุญาต
 
-src/mobility/common/geo_utils.py
+## src/mobility/common/geo_utils.py
   เก็บฟังก์ชันภูมิศาสตร์ที่ใช้ร่วมกัน เช่น Haversine distance
 
-src/mobility/common/logger.py
+## src/mobility/common/logger.py
   สร้าง structured JSON logging และ helper สำหรับบันทึก event
 
-config/common.yaml
+## config/common.yaml
   ค่า project-level ที่ทุก task ใช้ร่วมกัน เช่น timezone และ path หลัก
 
 
-5. Task 1: Parse and Unify
---------------------------
+# 6. Task 1: Parse and Unify
 
-Public API
+## Public API
 
-submission/parser.py
+### submission/parser.py
   Entry point ตามโจทย์
   ให้ฟังก์ชัน parse_all(tmt_files, wdmt_file, scgjwd_file)
   เป็น wrapper บาง ๆ ที่สร้าง IngestionPipeline จาก YAML แล้วเรียก parse_all ตัวจริง
 
-Production implementation
+## Production implementation
 
-src/mobility/task1_ingestion/pipeline.py
+### src/mobility/task1_ingestion/pipeline.py
   Orchestrate parser ของทุก source
   ตรวจว่าไฟล์ใดมีอยู่, ข้าม source ที่ไม่มี input ตาม policy, รวมผลลัพธ์,
   เก็บ parse issues และเรียง output ตาม vehicle_id และ recorded_at
   มี write_silver() สำหรับเขียน Parquet แบบ overwrite หรือ append พร้อม deduplication
 
-src/mobility/task1_ingestion/base.py
+### src/mobility/task1_ingestion/base.py
   BaseParser ที่ parser ทุก source ใช้ร่วมกัน
   รับผิดชอบ sanitization เช่นแปลง null, "-", missing value และค่าตัวเลขผิดรูปแบบ
   ให้เป็นค่ามาตรฐานโดยไม่ทำให้ทั้ง pipeline crash
 
-src/mobility/task1_ingestion/parsers/tmt.py
+### src/mobility/task1_ingestion/parsers/tmt.py
   Parser สำหรับ TMT packet 0x51 และ 0x52
   รวม packet ของรถคันเดียวกันตามเวลา และ derive engine state ด้วย state machine
   event code 33 เปลี่ยนเป็น ON, 34 เปลี่ยนเป็น OFF และ 30 รักษาสถานะเดิม
   อ่าน CAN fields เช่น fuel rate, RPM, accelerator position และ brake state
 
-src/mobility/task1_ingestion/parsers/wdmt.py
+### src/mobility/task1_ingestion/parsers/wdmt.py
   Parser สำหรับ WDMT JSON
   แปลง timestamp, coordinate, speed และ odometer เข้าสู่ unified schema
   engine_on และ CAN-only fields เป็น null เมื่อ source ไม่มีข้อมูล
 
-src/mobility/task1_ingestion/parsers/scgjwd.py
+### src/mobility/task1_ingestion/parsers/scgjwd.py
   Parser สำหรับ SCGJWD CSV
   แปลง IMEI, timestamp, coordinate, speed และ engine state
 
-src/mobility/task1_ingestion/gap_imputer.py
+### src/mobility/task1_ingestion/gap_imputer.py
   Utility สำหรับทดลองเติม GPS gap ระยะสั้น
   แยกจาก parse flow หลักเพื่อไม่ให้ข้อมูลที่คาดการณ์ปะปนกับข้อมูลจริงโดยอัตโนมัติ
 
-config/task1_ingestion.yaml
+### config/task1_ingestion.yaml
   กำหนด missing-source policy, invalid-record policy, TMT event codes,
   output path, write mode และ deduplication
 
-scripts/run_task1.py
+### scripts/run_task1.py
   Command-line runner สำหรับอ่าน data/bronze และเขียน Silver Parquet
   ใช้ IngestionPipeline เดียวกับ public API จึงไม่ duplicate parsing logic
 
-tests/test_task1_parsers.py
+### tests/test_task1_parsers.py
   ทดสอบ parser, schema normalization, engine state และ missing-source behavior
 
 
-6. Task 2: Trip Segmentation and Features
------------------------------------------
+# 7. Task 2: Trip Segmentation and Features
 
-Public API
+## Public API
 
-submission/features.py
+### submission/features.py
   Entry point ตามโจทย์
   ให้ฟังก์ชัน build_trip_features(unified_stream)
   สร้าง TripFeatureExtractor จาก YAML และคืน pandas DataFrame โดยไม่เขียนไฟล์
 
-Production implementation
+## Production implementation
 
-src/mobility/task2_features/segmenter.py
+### src/mobility/task2_features/segmenter.py
   แบ่ง event ของรถแต่ละคันเป็น trip
 
-  engine_and_gap:
+####   engine_and_gap:
     ใช้เมื่อรถมี engine_on
     trip เริ่มเมื่อเครื่องยนต์ ON
     trip จบเมื่อเครื่องยนต์ OFF หรือ gap มากกว่า threshold
 
-  gps_gap_fallback:
+####   gps_gap_fallback:
     ใช้เมื่อ engine_on เป็น null ทุก record
     แบ่ง trip จาก time gap เพียงอย่างเดียว
     เป็น fallback ที่มีหลักฐานน้อยกว่า engine-aware segmentation
 
   หลังแบ่งแล้วจะตัด segment ที่สั้นกว่า minimum duration
 
-src/mobility/task2_features/harsh_events.py
+### src/mobility/task2_features/harsh_events.py
   ตรวจ harsh acceleration และ harsh braking จากการเปลี่ยนความเร็วตามเวลา
   ใช้ threshold และ maximum sampling interval จาก YAML
 
-src/mobility/task2_features/feature_extractor.py
+### src/mobility/task2_features/feature_extractor.py
   Validate Unified GPS Event Stream, เรียก TripSegmenter และสร้างหนึ่งแถวต่อ trip
   คำนวณ duration, distance, speed statistics, harsh-event counts, idle ratio,
   time-of-day risk, fuel rate, RPM และ data grade
   ใช้ odometer delta เมื่อใช้ได้ มิฉะนั้นใช้ Haversine distance
   มี write_gold() สำหรับเขียนผลแบบ overwrite หรือ append
 
-config/task2_features.yaml
+### config/task2_features.yaml
   กำหนด gap threshold, minimum trip duration, GPS fallback, harsh-event thresholds,
   idle rule, time-of-day windows และ Gold output policy
 
-scripts/run_task2.py
+### scripts/run_task2.py
   อ่าน Silver Parquet, เรียก TripFeatureExtractor และเขียน Gold Parquet
 
-tests/test_task2_features.py
+### tests/test_task2_features.py
   ทดสอบ segmentation, minimum-duration filter, GPS fallback และ feature calculations
 
 
-7. Task 3: Driver Risk Model
-----------------------------
+# 8. Task 3: Driver Risk Model
 
-Public API
+## Public API
 
-submission/model.py
+### submission/model.py
   ให้ class DriverRiskModel และ list_scoring_methods()
   การทำงานเป็น trip-first: score_trips() ก่อน แล้ว aggregate_drivers()
   method เริ่มต้นคือ weighted_composite
 
-src/mobility/task3_scoring/trip_scorer.py
+## src/mobility/task3_scoring/trip_scorer.py
   คำนวณคะแนนระดับ trip ช่วง 0-100 โดย 100 หมายถึงปลอดภัยที่สุด
 
-  weighted_composite:
+###  weighted_composite:
     วิธีหลักแบบ rule-based
     หักคะแนนตาม feature, threshold และ weight ที่ประกาศใน YAML
     อธิบาย contribution ของแต่ละ feature ได้ตรงไปตรงมา
 
-  robust_zscore:
+###  robust_zscore:
     วิธี challenger แบบ unsupervised
     ใช้ median และ MAD ภายใน cohort source + data_grade
     ตรวจพฤติกรรมที่ผิดจากกลุ่มโดยไม่ต้องสร้าง labels ปลอม
     ผลเป็น relative anomaly และไม่ใช่ accident probability
 
-src/mobility/task3_scoring/driver_aggregator.py
+### src/mobility/task3_scoring/driver_aggregator.py
   รวมคะแนนหลาย trip เป็นคะแนนระดับรถโดยไม่ผสมความหมายของ Grade A และ Grade B
   ใช้ Bayesian-style shrinkage ดึงคะแนนของรถที่มีข้อมูลน้อยเข้าหา prior score
   แสดง confidence จากจำนวน trip
 
-config/task3_scoring.yaml
+### config/task3_scoring.yaml
   เก็บ score range, Grade A/B feature weights, thresholds, rationale,
   literature reference keys, cold-start prior, confidence thresholds
   และ robust-zscore settings
 
-submission/scoring_design.md
+### submission/scoring_design.md
   อธิบาย methodology, การเปรียบเทียบสองวิธี, data-grade behavior,
   feature importance, cold start และข้อจำกัดจากการไม่มี labeled ground truth
 
-tests/test_task3_model.py
+### tests/test_task3_model.py
   ทดสอบ trip scoring, grade separation, contribution ranking,
   cold-start adjustment และ scoring methods
 
 
-8. Data grades และความหมายของผลลัพธ์
+# 9. Data grades และความหมายของผลลัพธ์
 -------------------------------------
 
-Grade A
+## Grade A
   มี CAN signals อย่างน้อยบางรายการ
   ใช้ speed behavior, harsh events และข้อมูลที่เกี่ยวข้องกับการควบคุมรถ
   ผลลัพธ์เรียกว่า Driver Risk Score
 
-Grade B
+## Grade B
   เป็นข้อมูล GPS-only หรือไม่มี CAN evidence ที่เพียงพอ
   ใช้เฉพาะ speed-related features ที่สังเกตได้
   ผลลัพธ์เรียกว่า Speed Behavior Index ไม่ใช่ full Driver Score
@@ -248,33 +268,31 @@ Grade B
 ไม่ใช่ probability ของอุบัติเหตุหรือราคาประกัน เพราะไม่มี labeled ground truth
 
 
-9. Task 4 และเอกสารประกอบ
--------------------------
+# 10. Task 4 และเอกสารประกอบ
 
-submission/system_design.md
+### submission/system_design.md
   ตอบโจทย์ production system design ครอบคลุม batch/streaming boundary,
   H3 resolution, PDPA, k-anonymity, engine-state bug, scale estimate
   และ model lifecycle
 
-docs/task0-EDA.html
+### docs/task0-EDA.html
   สรุป schema และการสำรวจ raw data จากทั้ง 3 sources
 
-docs/task1-overview.html
+### docs/task1-overview.html
   อธิบาย Task 1 workflow, files, parser behavior และ requirement compliance
 
-docs/task2-overview.html
+### docs/task2-overview.html
   อธิบาย Task 2 workflow, segmentation methods, feature output และ files
 
-docs/task3-overview.html
+### docs/task3-overview.html
   อธิบาย scoring workflow, สอง scoring methods, cold start,
   feature contributions และ requirement traceability
 
-articles/
+### articles/
   เก็บบทความและงานวิจัยที่ใช้สนับสนุน feature choice และ scoring rationale
 
 
-10. Notebooks
--------------
+# 11. Notebooks
 
 notebooks/00_end_to_end_eda.ipynb
   รัน Task 1 -> Task 2 -> Task 3 ใน memory เพื่อทดสอบ flow ทั้งระบบ
@@ -292,8 +310,7 @@ notebooks/task2/02_trip_features_eda.ipynb
   สำรวจผล trip segmentation, feature distributions และ null coverage
 
 
-11. Entry points ที่ควรรู้
--------------------------
+# 12. Entry points
 
 ใช้ตาม deliverable โดยไม่เขียนข้อมูล:
 
@@ -311,8 +328,7 @@ notebooks/task2/02_trip_features_eda.ipynb
   uv run pytest
 
 
-12. หลักการออกแบบ
------------------
+# 13. หลักการออกแบบ
 
 - Public entry points มีขนาดเล็กและ reuse implementation จาก src
 - Business rules อยู่ใน src และ YAML ไม่กระจายซ้ำใน scripts หรือ notebooks
