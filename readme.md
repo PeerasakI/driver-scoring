@@ -213,18 +213,18 @@ GPS event stream as a list of normalized dicts.
 
 ```python
 {
-    "source":         str,          # "TMT" | "WDMT" | "SCGJWD"
-    "vehicle_id":     str,          # source-native identifier — see note
-    "recorded_at":    datetime,     # timezone-aware, UTC+7
-    "lat":            float,
-    "lon":            float,
-    "speed_kmh":      float,
-    "engine_on":      bool | None,
-    "odometer_km":    float | None,
-    "fuel_rate_lh":   float | None, # L/hr — TMT only
-    "engine_rpm":     float | None, # TMT only
-    "accel_position": float | None, # TMT only
-    "brake_active":   bool | None,  # TMT only
+    "source": str,  # "TMT" | "WDMT" | "SCGJWD"
+    "vehicle_id": str,  # source-native identifier — see note
+    "recorded_at": datetime,  # timezone-aware, UTC+7
+    "lat": float,
+    "lon": float,
+    "speed_kmh": float,
+    "engine_on": bool | None,
+    "odometer_km": float | None,
+    "fuel_rate_lh": float | None,  # L/hr — TMT only
+    "engine_rpm": float | None,  # TMT only
+    "accel_position": float | None,  # TMT only
+    "brake_active": bool | None,  # TMT only
 }
 ```
 

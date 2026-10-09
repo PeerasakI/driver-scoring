@@ -27,7 +27,9 @@ def main() -> None:
     output = pipeline.write_silver(records)
     print(f"Wrote {len(records):,} records to {output}")
     if pipeline.last_issues:
-        print(f"Rejected {len(pipeline.last_issues):,} records/files; see the JSONL log")
+        print(
+            f"Rejected {len(pipeline.last_issues):,} records/files; see the JSONL log"
+        )
 
 
 if __name__ == "__main__":

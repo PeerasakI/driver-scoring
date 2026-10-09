@@ -105,9 +105,9 @@ class TripFeatureExtractor:
         if not valid:
             return pd.DataFrame(columns=list(UnifiedGPSEvent.model_fields))
         frame = pd.DataFrame.from_records(valid)
-        frame["recorded_at"] = pd.to_datetime(frame["recorded_at"], utc=True).dt.tz_convert(
-            self.settings.common.project.timezone
-        )
+        frame["recorded_at"] = pd.to_datetime(
+            frame["recorded_at"], utc=True
+        ).dt.tz_convert(self.settings.common.project.timezone)
         return frame.sort_values(
             ["source", "vehicle_id", "recorded_at"], kind="stable"
         ).reset_index(drop=True)

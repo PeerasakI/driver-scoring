@@ -67,9 +67,7 @@ class DriverRiskAggregator:
                 trip_count=trip_count,
                 total_duration_min=round(float(group["trip_duration_min"].sum()), 6),
                 total_distance_km=round(float(group["distance_km"].sum()), 6),
-                evidence_coverage=round(
-                    float(group["evidence_coverage"].mean()), 6
-                ),
+                evidence_coverage=round(float(group["evidence_coverage"].mean()), 6),
                 confidence=self._confidence(trip_count),
                 score_version=version,
             ).model_dump(mode="python")
@@ -101,7 +99,9 @@ class DriverRiskAggregator:
             try:
                 row = TripRisk.model_validate(clean)
             except ValidationError as exc:
-                raise ValueError(f"invalid trip score at row {row_number}: {exc}") from exc
+                raise ValueError(
+                    f"invalid trip score at row {row_number}: {exc}"
+                ) from exc
             dumped = row.model_dump(mode="python")
             dumped["source"] = row.source.value
             dumped["data_grade"] = row.data_grade.value

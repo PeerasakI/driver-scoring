@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from datetime import timedelta
 from pathlib import Path
-
+import pytest
 from mobility.task1_ingestion.pipeline import IngestionPipeline
 from submission.parser import parse_all
 
@@ -42,7 +42,9 @@ def test_actual_files_produce_sorted_unified_stream() -> None:
         "SCGJWD",
     }
     assert all(set(record) == EXPECTED_FIELDS for record in records)
-    assert all(record["recorded_at"].utcoffset() == timedelta(hours=7) for record in records)
+    assert all(
+        record["recorded_at"].utcoffset() == timedelta(hours=7) for record in records
+    )
     assert records == sorted(
         records, key=lambda record: (record["vehicle_id"], record["recorded_at"])
     )
@@ -125,10 +127,10 @@ def test_numeric_zero_is_not_treated_as_missing(tmp_path: Path) -> None:
         encoding="utf-8",
     )
     record = parse_all([], str(path), "")[0]
-    assert record["lat"] == 0.0
-    assert record["lon"] == 0.0
-    assert record["speed_kmh"] == 0.0
-    assert record["odometer_km"] == 0.0
+    assert record["lat"] == pytest.approx(0.0)
+    assert record["lon"] == pytest.approx(0.0)
+    assert record["speed_kmh"] == pytest.approx(0.0)
+    assert record["odometer_km"] == pytest.approx(0.0)
 
 
 def test_invalid_record_is_rejected_without_stopping_valid_rows(tmp_path: Path) -> None:

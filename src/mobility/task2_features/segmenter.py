@@ -28,7 +28,9 @@ class TripSegment:
     def duration_minutes(self) -> float:
         if self.events.empty:
             return 0.0
-        elapsed = self.events["recorded_at"].iloc[-1] - self.events["recorded_at"].iloc[0]
+        elapsed = (
+            self.events["recorded_at"].iloc[-1] - self.events["recorded_at"].iloc[0]
+        )
         return float(elapsed.total_seconds() / 60.0)
 
 

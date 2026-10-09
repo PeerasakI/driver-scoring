@@ -87,9 +87,7 @@ class TripRiskScorer:
 
         return self._build_frames(scores, contributions, len(trip_features))
 
-    def ranked_feature_contributions(
-        self, contributions: pd.DataFrame
-    ) -> pd.DataFrame:
+    def ranked_feature_contributions(self, contributions: pd.DataFrame) -> pd.DataFrame:
         """Aggregate actual penalty contributions and rank them within each grade."""
 
         if contributions.empty:
@@ -144,11 +142,11 @@ class TripRiskScorer:
         for feature, component in grade_config.components.items():
             value = observed.get(feature)
             available = value is not None
-            effective_weight = component.weight / available_weight if available else None
-            normalized = self._normalize(value, component.safe, component.severe)
-            penalty = (
-                normalized * effective_weight * score_width if available else None
+            effective_weight = (
+                component.weight / available_weight if available else None
             )
+            normalized = self._normalize(value, component.safe, component.severe)
+            penalty = normalized * effective_weight * score_width if available else None
             ledger.append(
                 {
                     "trip_id": trip.trip_id,
@@ -189,9 +187,7 @@ class TripRiskScorer:
         risk_points = score_range.maximum - trip_score
         top_row = ranked_rows[0]
         top_factor = (
-            str(top_row["feature"])
-            if float(top_row["penalty_points"]) > 0
-            else "none"
+            str(top_row["feature"]) if float(top_row["penalty_points"]) > 0 else "none"
         )
         result = TripRisk(
             trip_id=trip.trip_id,
@@ -379,7 +375,9 @@ class RobustZScoreScorer(TripRiskScorer):
             scale = 1.4826 * mad
             if scale <= 0:
                 scale = float(values.std(ddof=0))
-            positive_z = 0.0 if scale <= 0 else max(0.0, (float(value) - median) / scale)
+            positive_z = (
+                0.0 if scale <= 0 else max(0.0, (float(value) - median) / scale)
+            )
             normalized = self._clip(positive_z / rules.clipping_limit, 0.0, 1.0)
             effective_weight = component.weight / available_weight
             penalty = normalized * effective_weight * score_width

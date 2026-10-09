@@ -99,7 +99,9 @@ class TMTParser(BaseParser):
         vehicle_id: str,
     ):
         common_header = payload.get("Common header")
-        common_gps = common_header.get("GPS", {}) if isinstance(common_header, dict) else {}
+        common_gps = (
+            common_header.get("GPS", {}) if isinstance(common_header, dict) else {}
+        )
         gps = raw.get("GPS") if isinstance(raw.get("GPS"), dict) else common_gps
         can = self._can_values(raw.get("CAN List"))
         engine_rpm = self.number(can.get("Engine Speed"))

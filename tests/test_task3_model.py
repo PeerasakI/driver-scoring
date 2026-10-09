@@ -122,9 +122,7 @@ def test_missing_grade_a_components_reduce_coverage_not_become_safe_zeros() -> N
 
     assert result["evidence_coverage"] == pytest.approx(0.68)
     assert result["trip_score"] == pytest.approx(0.0)
-    missing = model.trip_contributions_.loc[
-        ~model.trip_contributions_["available"]
-    ]
+    missing = model.trip_contributions_.loc[~model.trip_contributions_["available"]]
     assert set(missing["feature"]) == {
         "harsh_brake_rate_per_hour",
         "harsh_accel_rate_per_hour",

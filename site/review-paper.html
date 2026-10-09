@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extended Literature Review - Telematics Driver Scoring</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+  @page {
+    size: A4;
+    margin: 20mm 15mm 20mm 15mm;
+  }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: #1e293b;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 24px;
+  }
+
+  h1 {
+    font-size: 21px;
+    font-weight: 700;
+    color: #0f172a;
+    border-bottom: 2px solid #0284c7;
+    padding-bottom: 8px;
+    margin-top: 0;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    color: #475569;
+    display: block;
+    margin-top: 4px;
+  }
+
+  h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0369a1;
+    border-left: 4px solid #0284c7;
+    padding-left: 8px;
+    margin-top: 24px;
+    margin-bottom: 10px;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #0f172a;
+    margin-top: 16px;
+    margin-bottom: 6px;
+    page-break-after: avoid;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+
+  ul, ol {
+    margin-top: 4px;
+    margin-bottom: 12px;
+    padding-left: 24px;
+  }
+
+  li {
+    margin-bottom: 5px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 11.5px;
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    border: 1px solid #cbd5e1;
+    padding: 6px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: 600;
+  }
+
+  tr:nth-child(even) td {
+    background-color: #f8fafc;
+  }
+
+  .math-display {
+    background: #f8fafc;
+    padding: 8px;
+    border-radius: 4px;
+    margin: 8px 0;
+    border: 1px solid #e2e8f0;
+    page-break-inside: avoid;
+    text-align: center;
+  }
+
+  .diagram {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 10px 14px;
+    white-space: pre;
+    line-height: 1.35;
+    margin: 12px 0;
+    page-break-inside: avoid;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  .citation {
+    color: #475569;
+    font-size: 0.92em;
+    white-space: nowrap;
+  }
+
+  .references li {
+    margin-bottom: 8px;
+  }
+
+  @media print {
+    body {
+      padding: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>
+  การทบทวนวรรณกรรมฉบับขยาย: การวิเคราะห์และประเมินคะแนนผู้ขับขี่ด้วยข้อมูลโทรมาตรกรรม
+  <span class="subtitle">(Extended Literature Review: Telematics-Based Driver Scoring and Behavioral Analytics)</span>
+</h1>
+
+<h2>1. Rule-Based Scoring Systems (การคิดคะแนนบนฐานกฎเกณฑ์และหลักฟิสิกส์จลนศาสตร์)</h2>
+<p>
+  ระบบ Rule-based อาศัยหลักฟิสิกส์จลนศาสตร์ (Kinematics), กฎหมายจราจร และการนิยามเงื่อนไขเชิงเรขาคณิต เพื่อตรวจจับเหตุการณ์เสี่ยงและคำนวณคะแนนขับขี่อย่างโปร่งใสและตรวจสอบย้อนกลับได้ <span class="citation">(Boylan et al., 2024; Liang et al., 2026; Medarevi&#263; et al., 2024)</span>
+</p>
+
+<div class="diagram">Raw Sensor Streams (GPS, CAN-bus, IMU, Simulation)
+                       │
+       ┌───────────────┴───────────────┐
+       ▼                               ▼
+[Kinematic Thresholds]       [Physical & Geometric Rules]
+- G-force / Acceleration     - Stopping Distance in Fog
+- Longitudinal Jerk (j)      - Safety Headway (2 s)
+- Map/Lane Matching Rules    - Speed Baselines
+       │                               │
+       └───────────────┬───────────────┘
+                       ▼
+         [Sub-score Normalization (0–100)]
+                       │
+                       ▼
+          [Weighted Linear Aggregation]
+            S = ∑ w_i · Score_i
+                       │
+                       ▼
+       Comprehensive Driver Safety Score</div>
+
+<h3>1.1 การกำหนดขีดเริ่มเปลี่ยนเชิงจลนศาสตร์ (Kinematic Thresholding)</h3>
+<ul>
+  <li><strong>การตัดค่าความเร่ง (Acceleration Thresholds):</strong> การใช้ค่าขีดเริ่มเปลี่ยนแรง G-force ระหว่าง $0.3\text{ g}$ ถึง $0.7\text{ g}$ สำหรับความเร่งตามยาว (Longitudinal) และความเร่งตามขวาง (Lateral) ในการระบุเหตุการณ์ความเร่งสูง (High G-force events) <span class="citation">(Boylan et al., 2024)</span> ขณะที่การทดลองแบบดั้งเดิมมักใช้เกณฑ์ตายตัว เช่น ความเร่ง $> 3\text{ m/s}^2$ หรืออัตราหน่วง $<-4\text{ m/s}^2$ <span class="citation">(Yedilkhan et al., 2025)</span></li>
+  <li><strong>การวิเคราะห์อัตราการเปลี่ยนความเร่งหรือความกระตุก (Longitudinal Jerk):</strong> ใช้อนุพันธ์อันดับหนึ่งของความเร่งเทียบกับเวลา ($j = \frac{da}{dt}$) ประเมินความนุ่มนวล (Smoothness Score) <span class="citation">(Medarevi&#263; et al., 2024)</span>:
+    <ul>
+      <li>ช่วงความกระตุกสัมบูรณ์ $|j|$ ระหว่าง $0.3\text{–}0.9\text{ m/s}^3$ ที่ความเร็ว $100\text{–}130\text{ km/h}$ เป็นเกณฑ์ที่เริ่มสูญเสียความสบายในการโดยสาร <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+      <li>ค่า Jerk ตามยาว $> 1.07\text{ m/s}^3$ บ่งชี้การเร่งเครื่องยนต์กระชาก (Aggressive acceleration) <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+      <li>ค่า Jerk ตามยาว $< -1.43\text{ m/s}^3$ บ่งชี้การเบรกกระชากรุนแรง (Aggressive deceleration) <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+    </ul>
+  </li>
+</ul>
+
+<h3>1.2 การแปลงกฎฟิสิกส์และเรขาคณิตเป็นสมการคะแนน (Physics & Geometric Formulations)</h3>
+<ul>
+  <li><strong>ระยะหยุดรถตามทัศนวิสัยในสภาพอากาศเลวร้าย (Speed Compliance in Bad Weather):</strong> <span class="citation">(Medarevi&#263; et al., 2024)</span> เมื่อทัศนวิสัยต่ำกว่า $400\text{ m}$ มีการคำนวณระยะหยุดรถรวม ($d_{\text{stopping}}$) เพื่อประเมินความเร็วเทียบกับระยะมองเห็น <span class="citation">(Medarevi&#263; et al., 2024)</span>:
+    <div class="math-display">
+      $$d_{\text{stopping}} = d_{\text{reaction}} + d_{\text{braking}} = (v \cdot t_{\text{reaction}}) + \frac{v^2}{2 \cdot g \cdot k_{\text{friction}}}$$
+    </div>
+    กำหนดเวลาตอบสนอง $t_{\text{reaction}} = 2\text{ วินาที}$, $g$ คือความเร่งโน้มถ่วง, $k_{\text{friction}} \in [0.2, 0.7]$ ตามประเภทผิวถนน <span class="citation">(Medarevi&#263; et al., 2024)</span> หากระยะ $d_{\text{stopping}}$ ยาวเกินกว่าระยะมองเห็น จะถูกหักคะแนน <span class="citation">(Medarevi&#263; et al., 2024)</span>
+  </li>
+  <li><strong>การรักษาระยะห่างที่ปลอดภัย (Safety Distance Compliance):</strong> อิงเวลาตอบสนอง $2\text{ วินาที}$ ($d_{\text{optimal}} = 2 \cdot v$) <span class="citation">(Medarevi&#263; et al., 2024)</span> และวัดสัดส่วนเวลาที่มีการละเมิดระยะห่างเพื่อคำนวณเป็นคะแนนย่อย <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+  <li><strong>การจับคู่ช่องจราจรด้วยเวกเตอร์ (Lane Matching via Vector Cross-Product):</strong> <span class="citation">(Liang et al., 2026)</span> แปลงตำแหน่งพิกัดสู่ดัชนีช่องจราจรบนกริดขนาดช่วงละ $10\text{ m}$ <span class="citation">(Liang et al., 2026)</span> โดยหาทิศทางเปรียบเทียบกับเส้นอ้างอิงผ่านผลคูณไขว้:
+    <div class="math-display">
+      $$z = (\vec{CA} \times \vec{AB})_z$$
+    </div>
+    เครื่องหมายของ $z$ แสดงตำแหน่งซ้าย/ขวา <span class="citation">(Liang et al., 2026)</span> พร้อมหาระยะห่างตั้งฉาก $\hat{\delta}$ เพื่อแปลงเป็นดัชนีเลน ($x_{i,t}$):
+    <div class="math-display">
+      $$x_{i,t} = \left\lfloor \frac{\hat{\delta} + \frac{W^*}{2}}{w} \right\rfloor + 1$$
+    </div>
+    โดย $W^*$ คือความกว้างถนนรวม และ $w$ คือความกว้างเลนมาตรฐาน ($3.7\text{ m}$) <span class="citation">(Liang et al., 2026)</span>
+  </li>
+</ul>
+
+<h3>1.3 โครงสร้างการรวมคะแนนแบบลำดับชั้น (Hierarchical Rule-Based Aggregation)</h3>
+<p>
+  ระบบ Decision Support System (DSS) คำนวณ 19 คะแนนย่อย รวมสู่ 8 หมวดคะแนนหลัก (High-Level Scores) และสังเคราะห์เป็นคะแนนรวม $0\text{–}100$ <span class="citation">(Medarevi&#263; et al., 2024)</span>:
+</p>
+<div class="math-display">
+  $$\text{Driver Score} = \sum_{k=1}^{8} w_k \cdot \text{Score}_k$$
+</div>
+<p>ค่าน้ำหนักมาตรฐานที่ปรับจูนร่วมกับผู้เชี่ยวชาญ ได้แก่ <span class="citation">(Medarevi&#263; et al., 2024)</span>:</p>
+<ol>
+  <li><strong>Compliance Score ($w_3 = 0.50$):</strong> อุบัติเหตุ ($33\%$), ฝ่าฝืนความเร็ว ($33\%$), สัญญาณไฟ/ป้ายจราจร ($33\%$) <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+  <li><strong>Mitigation Score ($w_7 = 0.10$):</strong> อัตราการจัดการสถานการณ์วิกฤตสำเร็จ (เช่น ลดความเร็วเมื่อถูกตัดหน้า) <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+  <li><strong>Maneuvering Score ($w_8 = 0.10$):</strong> Area Insurance ($25\%$), Non-aggressiveness ($25\%$), Proactivity ($25\%$), Maneuvering Attention ($25\%$) <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+  <li><strong>Defensiveness Score ($w_1 = 0.08$):</strong> รักษาระยะห่าง ($33.3\%$), การอยู่ในเลน ($20\%$), Smoothness ($20\%$), ความเร็วในหมอก ($26.7\%$) <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+  <li><strong>Attention Score ($w_5 = 0.08$):</strong> ตรวจกระจกหลังทุก $8\text{ s}$ ($30\%$) และการกวาดสายตาตรวจพบวัตถุ ($70\%$) ผ่าน Eye Tracker <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+  <li><strong>Reaction Score ($w_6 = 0.08$):</strong> เวลาตอบสนอง $t_d = t_2 - t_1$ ต่อเหตุการณ์ฉุกเฉิน <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+  <li><strong>Calmness Score ($w_4 = 0.03$):</strong> อัตราการเต้นหัวใจ (HRV) และการนำไฟฟ้าของผิวหนัง (GSR) ผ่านสมาร์ตแบนด์ <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+  <li><strong>Eco-driving Score ($w_2 = 0.03$):</strong> อัตราสิ้นเปลืองน้ำมันเชื้อเพลิงเทียบกับโมเดลจำลองรถยนต์ <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+</ol>
+
+<div class="page-break"></div>
+
+<h2>2. Machine Learning & Deep Learning-Based Scoring (การให้คะแนนด้วยโมเดลการเรียนรู้เชิงลึก)</h2>
+<p>
+  โมเดลแบบ Data-driven ถูกพัฒนาขึ้นเพื่อเรียนรู้มิติเวลาที่ซับซ้อน (Temporal Dynamics) จากสัญญาณเซ็นเซอร์ และลดภาระการออกแบบฟีเจอร์ด้วยตนเอง <span class="citation">(Agybetov &amp; Amirgaliyev, 2026; Yedilkhan et al., 2025)</span>
+</p>
+
+<div class="diagram">Raw Sensor Streams (CAN-bus / IMU / Sparse GPS)
+                       │
+       ┌───────────────┴───────────────┐
+       ▼                               ▼
+[Continuous Signals (10–100 Hz)] [Sparse Trajectories (0.2–1 Hz)]
+- Speed (v), AccX, AccY, AccZ    - (Lat, Lon, Heading, Speed)
+- GyroX, GyroY, GyroZ            - Road Type, Daylight, Curvature
+       │                               │
+       ▼                               ▼
+[Sliding Window Segmentation]    [Contextual Tensor Maps]
+- T=200 samples (20 s), S=20     - Cell Speed/Accel Distributions
+- Z-score Standardized           - Deviation Map (Hellinger Dist.)
+       │                               │
+       └───────────────┬───────────────┘
+                       ▼
+[Deep Architecture Processing]
+├── 1D-CNN: สกัด Local Kinematic Transients
+├── LSTM / GRU: สกัด Long-Range Temporal Dependencies
+└── Poisson / GLM: แบบจำลองทางคณิตศาสตร์ประกันภัย
+                       │
+                       ▼
+Continuous Trip-Level Safety Score / Risk Cohort Output</div>
+
+<h3>2.1 การสกัดและแปลงคุณลักษณะ (Feature Representation & Embeddings)</h3>
+<ul>
+  <li><strong>Sliding Window Segmentation:</strong> ข้อมูลสัญญาณเวลาถูกแบ่งเป็นหน้าต่างเวลาย่อยเพื่อคงรูปแบบเชิงลำดับ:
+    <ul>
+      <li>งานของ Agybetov & Amirgaliyev ใช้หน้าต่างขนาด $T = 200\text{ ตัวอย่าง}$ ($20\text{ วินาที}$ ที่ $10\text{ Hz}$) เลื่อนก้าวละ $S = 20\text{ ตัวอย่าง}$ ($2\text{ วินาที}$) ซ้อนทับกัน <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span></li>
+      <li>งานของ Yedilkhan et al. ใช้ขนาด $14\text{ Time steps}$ ($\approx 7\text{ วินาที}$) และปรับสเกลข้อมูลด้วย Z-score: $x' = \frac{x - \mu}{\sigma}$ <span class="citation">(Yedilkhan et al., 2025)</span></li>
+    </ul>
+  </li>
+  <li><strong>Contextual Deviation Feature Maps:</strong> <span class="citation">(Moosavi &amp; Ramnath, 2023)</span> สร้างเมทริกซ์ 2 มิติกระจายความเร็วเทียบความเร่งตามบริบท (ทางโค้ง สภาพแสง และประเภทถนน) <span class="citation">(Moosavi &amp; Ramnath, 2023)</span> และคำนวณความเบี่ยงเบนจากกลุ่มผู้ขับขี่ปลอดภัยอ้างอิง 5,000 คน <span class="citation">(Moosavi &amp; Ramnath, 2023)</span> ด้วยระยะทางเฮลลิงเกอร์ (Hellinger Distance):
+    <div class="math-display">
+      $$Hel\_Dist(A, B) = \frac{1}{\sqrt{2}} \sqrt{\sum_{i} (\sqrt{a_i} - \sqrt{b_i})^2}$$
+    </div>
+    เพื่อส่งให้โมเดลจำแนกกลุ่มความเสี่ยง <span class="citation">(Moosavi &amp; Ramnath, 2023)</span>
+  </li>
+</ul>
+
+<h3>2.2 สถาปัตยกรรมเครือข่ายประสาทเชิงลึกและการคำนวณคะแนนระดับทริป</h3>
+<ul>
+  <li><strong>1D Convolutional Neural Networks (1D-CNN):</strong> <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span> โครงสร้าง 3 บล็อกคอนโวลูชัน (Filters 32, 64, 128 ตัวตามลำดับ, Kernel size = 5) <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span> ประกบด้วย Batch Normalization, ReLU Activation และ MaxPool1D (Pool size = 2) <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span> เชื่อมต่อ Fully Connected Layers ($256 \rightarrow 64$) <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span> เด่นในการสกัดการเปลี่ยนแปลงความเร่งฉับพลัน <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span></li>
+  <li><strong>Long Short-Term Memory (LSTM) และ GRU:</strong> <span class="citation">(Agybetov &amp; Amirgaliyev, 2026; Yedilkhan et al., 2025)</span> โครงสร้าง 2-layer Stacked LSTM (Hidden sizes 128 และ 64) พร้อม Layer Normalization <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span> หรือ Single-layer LSTM/GRU ขนาด 64 ยูนิต พร้อม Dropout ($0.3$) <span class="citation">(Yedilkhan et al., 2025)</span> สามารถจดจำรูปแบบลำดับพฤติกรรมในอดีตผ่าน Input, Forget และ Output Gates <span class="citation">(Yedilkhan et al., 2025)</span></li>
+  <li><strong>Continuous Trip-Level Safety Score Formulation:</strong> สังเคราะห์คะแนนรวมระดับทริปจากการถ่วงน้ำหนักความน่าจะเป็นของเหตุการณ์เสี่ยง ($p_i$) ในแต่ละหน้าต่างย่อย <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span>:
+    <div class="math-display">
+      $$S_k = \frac{\sum_{i=1}^K w_i p_i}{\sum_{i=1}^K w_i}$$
+    </div>
+    โดยกำหนดให้น้ำหนัก $w_i$ สูงขึ้นในหน้าต่างที่มีค่าความเร่งรุนแรง เพื่อเพิ่ม Sensitivity ต่องานความปลอดภัย <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span>
+  </li>
+</ul>
+
+<h3>2.3 ผลการทดสอบประสิทธิภาพเชิงเปรียบเทียบ</h3>
+<table>
+  <thead>
+    <tr>
+      <th>งานวิจัย</th>
+      <th>ชุดข้อมูล</th>
+      <th>สถาปัตยกรรมโมเดล</th>
+      <th>Accuracy</th>
+      <th>Recall</th>
+      <th>F1-Score</th>
+      <th>AUC</th>
+      <th>ข้อค้นพบเชิงเทคนิคสำคัญ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Agybetov & Amirgaliyev (2026)</strong> <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span></td>
+      <td>UAH-DriveSet (28 ทริปจริง, สัญญาณ CAN: $v, a_{\text{long}}$) <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span></td>
+      <td><strong>1D-CNN</strong><br>LSTM<br>Random Forest<br>SVM</td>
+      <td><strong>0.847</strong><br>0.831<br>0.798<br>0.764</td>
+      <td><strong>0.913</strong><br>0.891<br>0.823<br>0.791</td>
+      <td>0.864<br><strong>0.867</strong><br>0.813<br>0.782</td>
+      <td><strong>0.941</strong><br>0.928<br>0.876<br>0.843</td>
+      <td>1D-CNN มี Recall สูงสุด เหมาะกับงานความปลอดภัยที่การพลาดพฤติกรรมเสี่ยงมีต้นทุนสูง <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Yedilkhan et al. (2025)</strong> <span class="citation">(Yedilkhan et al., 2025)</span></td>
+      <td>6-axis IMU (MPU6050, 4 ท่าทางก้าวร้าว) <span class="citation">(Yedilkhan et al., 2025)</span></td>
+      <td><strong>LSTM</strong><br>GRU<br>1D-CNN<br>Random Forest<br>XGBoost<br>SVM</td>
+      <td><strong>0.960</strong><br>0.920<br>0.880<br>0.620<br>0.610<br>0.400</td>
+      <td><strong>0.960</strong><br>0.940<br>0.890<br>0.630<br>0.620<br>0.420</td>
+      <td><strong>0.960</strong><br>0.920<br>0.880<br>0.640<br>0.620<br>0.380</td>
+      <td>-</td>
+      <td>สัญญาณ GyroZ ร่วมกับ AccY ($r=0.82$) มีความสำคัญสูงสุดในการแยกแยะท่าทางเลี้ยวและเบรก <span class="citation">(Yedilkhan et al., 2025)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Moosavi & Ramnath (2023)</strong> <span class="citation">(Moosavi &amp; Ramnath, 2023)</span></td>
+      <td>10.7M km, 5 เมืองในสหรัฐฯ, 22 Feature Maps <span class="citation">(Moosavi &amp; Ramnath, 2023)</span></td>
+      <td><strong>CNN (Tensor)</strong><br>Gradient Boosting (Vector)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>CNN บนโครงสร้าง Tensor แยกกลุ่มเสี่ยงสูงและต่ำได้ห่างกันอย่างมีนัยสำคัญ ($p < 0.001$) ดีกว่า GBC <span class="citation">(Moosavi &amp; Ramnath, 2023)</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>3. Applications & Practical Implications (การประยุกต์ใช้งานเชิงพาณิชย์และผลกระทบในทางปฏิบัติ)</h2>
+
+<h3>3.1 ธุรกิจประกันภัยรถยนต์ตามพฤติกรรมขับขี่ (Usage-Based Insurance: UBI)</h3>
+<p>
+  การปรับปรุงเบี้ยประกันภัยแบบไดนามิกรายสัปดาห์ (Weekly Pricing) โดยอาศัยข้อมูลพฤติกรรมและบริบท จากฐานข้อมูลผู้ขับขี่ 19,214 ราย ระยะทาง 181.4 ล้านกิโลเมตร <span class="citation">(Guillen et al., 2024)</span>:
+</p>
+<ul>
+  <li><strong>แบบจำลองทางคณิตศาสตร์ประกันภัย (Actuarial Models):</strong> <span class="citation">(Guillen et al., 2024)</span> เปรียบเทียบระหว่าง Poisson Regression (สูตรคูณ) กับ Linear Probability Model (สูตรบวก):
+    <div class="math-display">
+      $$E(y_{it}) = \exp\left(\sum \alpha_k x_{ki} + \sum \beta_j z_{jit}\right) \quad \text{เทียบกับ} \quad E(y_{it}) = \sum \alpha_k x_{ki} + \sum \beta_j z_{jit}$$
+    </div>
+  </li>
+  <li><strong>อิทธิพลของตัวแปรหน่วงเวลา (Lagged Predictors):</strong> <span class="citation">(Guillen et al., 2024)</span> การใส่ข้อมูลพฤติกรรมสัปดาห์ก่อนหน้าช่วยเพิ่มความแม่นยำในการทำนายอุบัติเหตุ:
+    <ul>
+      <li>โมเดลดั้งเดิม (Model 0: ข้อมูลประชากรศาสตร์) มีค่า $\text{AIC} = 14,287$ <span class="citation">(Guillen et al., 2024)</span></li>
+      <li>การเพิ่มจำนวนครั้งที่ขับเร็วเกินกำหนดในเมืองของสัปดาห์ก่อนหน้า ($\text{Speed\_event\_urban\_lag}$) ลด $\text{AIC}$ เหลือ $14,269$ ($\beta = 0.065, p < 0.001$) <span class="citation">(Guillen et al., 2024)</span></li>
+      <li>โมเดลที่ดีที่สุด (Model 7) รวม $\ln(\text{ระยะทาง})$ สัปดาห์ก่อนหน้า ($\beta = 0.361$), สัดส่วนการขับในเมืองสัปดาห์ก่อนหน้า ($\beta = 0.013$) และระยะทางขับกลางคืนสัปดาห์ปัจจุบัน ($\beta = 0.010$) ส่งผลให้ $\text{AIC}$ ลดลงเหลือ $14,216$ <span class="citation">(Guillen et al., 2024)</span></li>
+    </ul>
+  </li>
+  <li><strong>การประเมินความเป็นธรรมของเบี้ยประกันด้วยดัชนีจีนี (Gini Index):</strong> <span class="citation">(Guillen et al., 2024)</span> การคิดเบี้ยตามระยะทางตรงๆ แบบ PAYD ส่งผลให้ค่า Gini สูงถึง $0.443$ ซึ่งไม่เป็นธรรมต่อผู้ขับขี่ทางไกล <span class="citation">(Guillen et al., 2024)</span> ในขณะที่โมเดล Dynamic UBI ที่แปลงระยะทางเป็น Logarithm ควบคู่กับตัวแปรพฤติกรรม ให้ค่า Gini อยู่ที่ $0.180\text{–}0.182$ ซึ่งสะท้อนการปรับเบี้ยเฉพาะบุคคลที่สมดุลกว่า <span class="citation">(Guillen et al., 2024)</span></li>
+</ul>
+
+<h3>3.2 การบริหารกองยานพาหนะและขนส่งพัสดุ (Fleet Management & Last-Mile Delivery)</h3>
+<ul>
+  <li><strong>ความขัดแย้งระหว่างเป้าหมายเวลากับความปลอดภัย:</strong> <span class="citation">(Christie et al., 2025)</span> พนักงานส่งพัสดุต้องรับผิดชอบ $100\text{–}300$ ชิ้นต่อวัน ($160\text{ จุดแวะ ใน } 9\text{ ชั่วโมง}$) <span class="citation">(Christie et al., 2025)</span> แรงกดดันด้านเวลา (Time Pressure) ผลักดันให้เกิดการขับเร็วและการจอดรถในจุดอันตราย <span class="citation">(Christie et al., 2025)</span></li>
+  <li><strong>การจัดกลุ่มโปรไฟล์เพื่อคัดกรองบุคลากร (Driver Profiling):</strong> <span class="citation">(Medarevi&#263; et al., 2024)</span> การจัดกลุ่มผู้ขับขี่ 412 ราย ผ่าน PCA (6 องค์ประกอบหลัก ครอบคลุมความแปรปรวน $70\%$) และ K-means Clustering ($K=3$) ช่วยสนับสนุนการจับคู่งานอย่างมีประสิทธิภาพ <span class="citation">(Medarevi&#263; et al., 2024)</span>:
+    <ul>
+      <li><em>Cluster 1 (Non-defensive Drivers):</em> Compliance สูง ($98.7\%$) และ Maneuvering สูง ($78.7\%$) แต่มีพฤติกรรมก้าวร้าวและละเมิดระยะห่าง <span class="citation">(Medarevi&#263; et al., 2024)</span> เหมาะสำหรับงานส่งพัสดุด่วน <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+      <li><em>Cluster 2 (Bad Drivers):</em> คะแนนภาพรวมต่ำสุด ($33.5\%$) ฝ่าฝืนความเร็วและสิ้นเปลืองเชื้อเพลิงสูง <span class="citation">(Medarevi&#263; et al., 2024)</span> ต้องคัดออกในกระบวนการรับเข้าทำงาน <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+      <li><em>Cluster 3 (Compliant Drivers):</em> ปลอดภัยและ Defensiveness สูงสุด ($86.4\%$) แต่เวลาตอบสนองช้าและมีความเครียดสะสมสูง <span class="citation">(Medarevi&#263; et al., 2024)</span> เหมาะกับงานขับรถรับส่ง VIP (Chauffeur) <span class="citation">(Medarevi&#263; et al., 2024)</span></li>
+    </ul>
+  </li>
+</ul>
+
+<h3>3.3 ผลกระทบเชิงจิตวิทยาและการปรับเปลี่ยนพฤติกรรม (Behavioral Modification)</h3>
+<ul>
+  <li><strong>ปรากฏการณ์ Big Brother Effect:</strong> <span class="citation">(Christie et al., 2025)</span> คนขับที่ไม่คุ้นเคยกับ Telematics มองว่าระบบคือการสอดส่องและจับผิด ส่งผลให้เกิดความวิตกกังวล <span class="citation">(Christie et al., 2025)</span> ขณะที่คนขับที่ใช้ระบบพบว่าช่วยยับยั้งการขับเร็วได้จริง แต่สร้างความตึงเครียดสูงขึ้นเมื่อการจราจรติดขัดจนส่งของไม่ทัน <span class="citation">(Christie et al., 2025)</span></li>
+  <li><strong>ประสิทธิภาพของการส่งสัญญาณสะท้อนกลับ (Feedback & Incentives):</strong> <span class="citation">(Boylan et al., 2024; Christie et al., 2025)</span> การแจ้งเตือนเพียงอย่างเดียวให้ผลจำกัด แต่หากผสานเข้ากับสิ่งจูงใจทางการเงิน (Financial Incentives) หรือระบบรางวัลคนขับดีเด่น จะลดอัตราการเบรกกระชากและการขับเร็วได้อย่างมีนัยสำคัญ ($10\%\text{–}52\%$) <span class="citation">(Boylan et al., 2024; Christie et al., 2025)</span></li>
+</ul>
+
+<h3>3.4 การตรวจจับเหตุการณ์ผิดปกติบนท้องถนนแบบเรียลไทม์ (Real-Time Incident Detection)</h3>
+<ul>
+  <li><strong>การเตือนภัยอุบัติเหตุระดับช่องจราจร (Lane-Level Detection):</strong> <span class="citation">(Liang et al., 2026)</span> อาศัยข้อมูล Sparse Telematics (ความถี่ส่งข้อมูล $3\text{–}5\text{ วินาที}$, สัดส่วนรถที่ติดระบบ $5\%\text{–}7\%$) บนทางหลวง I-94 รัฐวิสคอนซิน <span class="citation">(Liang et al., 2026)</span></li>
+  <li><strong>กลไกการสะสมความเสี่ยงแบบมีระบบรีเซ็ต (Risk Accumulation & Reset Indicator):</strong> <span class="citation">(Liang et al., 2026)</span>
+    <div class="math-display">
+      $$A_t(x,y) = (1 - \phi_t(x,y)) \left[ A_{t-1}(x,y) + \overline{R}_t(x,y) \right]$$
+    </div>
+    โดย $\overline{R}_t(x,y) = 3 \cdot R_t^p + 2 \cdot R_t^s + 4 \cdot R_t^l$ <span class="citation">(Liang et al., 2026)</span> และกำหนดให้ $\phi_t(x,y) = 1$ เมื่อมียานพาหนะเคลื่อนผ่านช่องตารางดังกล่าวตามปกติเพื่อล้างค่าความเสี่ยง ป้องกันการเกิด False Alarm สะสม <span class="citation">(Liang et al., 2026)</span>
+  </li>
+  <li><strong>ผลลัพธ์เชิงประจักษ์:</strong> ตรวจจับอุบัติเหตุสำเร็จ $74.7\%$ ($62$ จาก $83$ เหตุการณ์) เกิด False Alarm เพียง $0.6\%$ ($3$ จาก $491$ ช่วงเวลาปกติ) Precision $95.4\%$, F1-score $0.84$ <span class="citation">(Liang et al., 2026)</span> และสามารถส่งสัญญาณเตือนภัยได้เร็วกว่ารายงานทางการล่วงหน้ามากกว่า $3\text{ นาที}$ คิดเป็น $13\%$ ของเหตุการณ์ <span class="citation">(Liang et al., 2026)</span></li>
+</ul>
+
+<div class="page-break"></div>
+
+<h2>4. สรุปการเปรียบเทียบระเบียบวิธีวิจัยเชิงลึก (Comparative Synthesis Matrix)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>งานวิจัย / ปี</th>
+      <th>ชุดข้อมูลและการสุ่มตัวอย่าง</th>
+      <th>ตัวแปรและฟีเจอร์นำเข้า</th>
+      <th>ระเบียบวิธีและอัลกอริทึม</th>
+      <th>ตัวชี้วัดและผลการทดสอบ</th>
+      <th>ข้อจำกัดของงานวิจัย</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Moosavi & Ramnath (2023)</strong> <span class="citation">(Moosavi &amp; Ramnath, 2023)</span></td>
+      <td>รถยนต์ 8,970 คัน, 10.7M km, 5 เมืองในสหรัฐฯ ($1\text{ Hz}$) <span class="citation">(Moosavi &amp; Ramnath, 2023)</span></td>
+      <td>22 Tensor Maps (Speed, Accel, Turn, AngleChange, Daylight) <span class="citation">(Moosavi &amp; Ramnath, 2023)</span></td>
+      <td>Hellinger Dist. + K-Means ($k=2$) + CNN vs. GBC <span class="citation">(Moosavi &amp; Ramnath, 2023)</span></td>
+      <td>CNN ให้ผลแยกแยะกลุ่มเสี่ยงสูงและต่ำชัดเจนที่สุด ($p < 0.001$) <span class="citation">(Moosavi &amp; Ramnath, 2023)</span></td>
+      <td>สมมติฐานรถ 1 คันมีคนขับคนเดียว ไม่รองรับการแชร์รถ <span class="citation">(Moosavi &amp; Ramnath, 2023)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Boylan et al. (2024)</strong> <span class="citation">(Boylan et al., 2024)</span></td>
+      <td>Review 45 บทความ (ปี 2010–2022, กลุ่มตัวอย่าง 10 ถึง 50,301 คัน) <span class="citation">(Boylan et al., 2024)</span></td>
+      <td>ความเร็ว ($n=32$), ความเร่ง ($n=32$), การเบรก ($n=24$), ระยะทาง ($n=15$) <span class="citation">(Boylan et al., 2024)</span></td>
+      <td>Systematic Review (PRISMA) & Quality Assessment (NHLBI) <span class="citation">(Boylan et al., 2024)</span></td>
+      <td>ML ถูกใช้มากสุดในงานประกันภัย; Feedback+Incentive ลดการขับเร็วได้ชัดเจน <span class="citation">(Boylan et al., 2024)</span></td>
+      <td>ขาดการควบคุมปัจจัยประชากรศาสตร์ และขาดการวิเคราะห์แบบ Hierarchical <span class="citation">(Boylan et al., 2024)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Liang et al. (2026)</strong> <span class="citation">(Liang et al., 2026)</span></td>
+      <td>ทางหลวงวิสคอนซิน, 11.4 TB (ฤดูร้อน) + 215 GB (ฤดูหนาว) Sparse GPS <span class="citation">(Liang et al., 2026)</span></td>
+      <td>Transition Anomaly ($R^p$), Speed Drop ($R^s$), Lane Change ($R^l$) <span class="citation">(Liang et al., 2026)</span></td>
+      <td>Spatial Discretization ($10\text{ m}$ Grid) + Reset Indicator <span class="citation">(Liang et al., 2026)</span></td>
+      <td>Detection Rate 74.7%, Precision 95.4%, F1 0.84, เตือนล่วงหน้า $>3\text{ นาที}$ ถึง 13% <span class="citation">(Liang et al., 2026)</span></td>
+      <td>ตรวจไม่พบอุบัติเหตุเบาบางบนไหล่ทางที่ไม่กระทบกระแสจราจรหลัก <span class="citation">(Liang et al., 2026)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Agybetov & Amirgaliyev (2026)</strong> <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span></td>
+      <td>UAH-DriveSet (28 ทริป) + Synthetic CAN (20 ทริป) ที่ $10\text{ Hz}$ <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span></td>
+      <td>ความเร็วตามยาว ($v$), ความเร่งตามยาว ($a_{\text{long}}$) <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span></td>
+      <td>Sliding Window ($20\text{ s}$) + 1D-CNN vs LSTM + Weighted Safety Score ($S_k$) <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span></td>
+      <td>1D-CNN: Recall 0.913, AUC 0.941; ตรวจจับ Aggressive ดีกว่า Drowsy <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span></td>
+      <td>ขนาดกลุ่มตัวอย่างทริปจริงมีจำกัด ($n=28$) และไม่รวมข้อมูลการเสียสมาธิ <span class="citation">(Agybetov &amp; Amirgaliyev, 2026)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Yedilkhan et al. (2025)</strong> <span class="citation">(Yedilkhan et al., 2025)</span></td>
+      <td>เซ็นเซอร์ 6 แกน MPU6050 จากรถ 3 คัน 3 คนขับ จำแนก 4 ท่าทางเสี่ยง <span class="citation">(Yedilkhan et al., 2025)</span></td>
+      <td>ความเร่ง (AccX/Y/Z) และความเร็วเชิงมุม (GyroX/Y/Z) <span class="citation">(Yedilkhan et al., 2025)</span></td>
+      <td>Z-score + Sliding Window ($7\text{ s}$) + LSTM, GRU, CNN, XGBoost, RF, SVM <span class="citation">(Yedilkhan et al., 2025)</span></td>
+      <td>LSTM ชนะเลิศ: Accuracy 96%, F1 0.96; AccX และ GyroZ มีความสำคัญสูงสุด <span class="citation">(Yedilkhan et al., 2025)</span></td>
+      <td>ทดสอบในสภาวะควบคุม กลุ่มตัวอย่างยังน้อย และจำแนกเพียง 4 ท่าทาง <span class="citation">(Yedilkhan et al., 2025)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Christie et al. (2025)</strong> <span class="citation">(Christie et al., 2025)</span></td>
+      <td>สัมภาษณ์ผู้จัดการ 20 คน และคนขับส่งพัสดุ 39 คน ในสหราชอาณาจักร <span class="citation">(Christie et al., 2025)</span></td>
+      <td>การรับรู้ต่อ Telematics, แรงกดดันเวลา, พฤติกรรมขับเร็ว, วัฒนธรรมองค์กร <span class="citation">(Christie et al., 2025)</span></td>
+      <td>การวิเคราะห์เชิงคุณภาพแบบเทมเพลต (Template Analysis via NVivo) <span class="citation">(Christie et al., 2025)</span></td>
+      <td>Telematics คุมความเร็วได้จริงแต่เพิ่มความเครียด; ผู้จัดการใช้ลดต้นทุนมากกว่าเน้นเซฟตี้ <span class="citation">(Christie et al., 2025)</span></td>
+      <td>การศึกษาจำกัดเฉพาะในสหราชอาณาจักร และกลุ่มตัวอย่างส่วนใหญ่มาจากบริษัทขนาดเล็ก <span class="citation">(Christie et al., 2025)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Guillen et al. (2024)</strong> <span class="citation">(Guillen et al., 2024)</span></td>
+      <td>ผู้ขับขี่ 19,214 คน, 55 สัปดาห์, 181.4M km, 922 เคลมอุบัติเหตุ <span class="citation">(Guillen et al., 2024)</span></td>
+      <td>ระยะทางรวม, ระยะทางกลางคืน, ขับเร็วเกินกำหนด, % ขับในเมือง, ข้อมูล Lagged <span class="citation">(Guillen et al., 2024)</span></td>
+      <td>Poisson Regression, Linear Probability Model, Logistic Regression, Gini Index <span class="citation">(Guillen et al., 2024)</span></td>
+      <td>ตัวแปรหน่วงเวลาสัปดาห์ก่อนช่วยลด AIC เหลือ 14,216; โมเดล Log-distance ให้ Gini 0.180 <span class="citation">(Guillen et al., 2024)</span></td>
+      <td>ไม่มีข้อมูลจราจรติดขัดภายนอก และกลุ่มตัวอย่างเบ้ไปทางผู้ขับขี่อายุน้อย <span class="citation">(Guillen et al., 2024)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Medarević et al. (2024)</strong> <span class="citation">(Medarevi&#263; et al., 2024)</span></td>
+      <td>คนขับอาชีพ 412 คนใน UAE ทดสอบบน Simulator $20\text{ นาที}$ ($100\text{ Hz}$ Sync) <span class="citation">(Medarevi&#263; et al., 2024)</span></td>
+      <td>19 Sub-scores (Eye-tracker, สัญญาณชีพ GSR/HRV, Jerk, Off-road, ระยะหยุดรถ) <span class="citation">(Medarevi&#263; et al., 2024)</span></td>
+      <td>Rule-based DSS + PCA (6 PCs, 70% Var) + K-means ($K=3$) + Kruskal-Wallis <span class="citation">(Medarevi&#263; et al., 2024)</span></td>
+      <td>สกัดได้ 3 โปรไฟล์: Non-defensive (55%), Bad (33.5%), Compliant (52.2%) ชัดเจนทางสถิติ <span class="citation">(Medarevi&#263; et al., 2024)</span></td>
+      <td>เป็นการทดลองบน Simulator ซึ่งอาจต่างจากพฤติกรรมบนถนนจริงในบางมิติ <span class="citation">(Medarevi&#263; et al., 2024)</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>5. เอกสารอ้างอิงหลัก (References)</h2>
+<p>
+  การอ้างอิงในเนื้อหาใช้รูปแบบ author–year และเชื่อมไปยังบทความฉบับที่เก็บไว้ใน
+  <code>articles/</code> เพื่อให้ตรวจสอบแหล่งที่มาได้โดยตรง
+</p>
+<ol class="references">
+  <li>Moosavi &amp; Ramnath (2023). <a href="../articles/context-aware-driver-risk-prediction-with-telematics-data.pdf">Context-aware driver risk prediction with telematics data</a>.</li>
+  <li>Boylan et al. (2024). <a href="../articles/a-systematic-review-of-the-use-of-in-vehicle-telematics-in-monitoring-driving-behaviours.pdf">A systematic review of the use of in-vehicle telematics in monitoring driving behaviours</a>.</li>
+  <li>Liang et al. (2026). <a href="../articles/real-time-lane-level-abnormal-traffic-detection-on-freeways-using-sparse-telematics-data.pdf">Real-time lane-level abnormal traffic detection on freeways using sparse telematics data</a>.</li>
+  <li>Agybetov &amp; Amirgaliyev (2026). <a href="../articles/driving-safety-assessment-via-deep-learning-models-on-can-bus-sensor-streams.pdf">Driving safety assessment via deep learning models on CAN-bus sensor streams</a>.</li>
+  <li>Yedilkhan et al. (2025). <a href="../articles/driver-behaviour-analysis-using-telematics-sensor-data-and-deep-learning-models.pdf">Driver behaviour analysis using telematics sensor data and deep learning models</a>.</li>
+  <li>Christie et al. (2025). <a href="../articles/managing-the-road-safety-risks-of-last-mile-deliveries-with-telematics-views-among-drivers-and-managers-in-the-uk.pdf">Managing the road safety risks of last-mile deliveries with telematics</a>.</li>
+  <li>Guillen et al. (2024). <a href="../articles/pricing-weekly-motor-insurance-drivers-with-behavioral-and-contextual-telematics-data.pdf">Pricing weekly motor insurance with behavioral and contextual telematics data</a>.</li>
+  <li>Medarevi&#263; et al. (2024). <a href="../articles/simulation-based-driver-scoring-and-profiling-system.pdf">Simulation-based driver scoring and profiling system</a>.</li>
+</ol>
+
+</body>
+</html>

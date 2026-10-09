@@ -38,7 +38,5 @@ def detect_harsh_events(
         harsh_accel_count=int(
             (acceleration >= rules.acceleration_threshold_mps2).sum()
         ),
-        harsh_brake_count=int(
-            (acceleration <= rules.braking_threshold_mps2).sum()
-        ),
+        harsh_brake_count=int((acceleration <= rules.braking_threshold_mps2).sum()),
     )

@@ -61,9 +61,7 @@ class DriverRiskModel:
         self._driver_aggregator = DriverRiskAggregator(self.settings, self.logger)
         self.trip_scores_ = pd.DataFrame(columns=TRIP_SCORE_COLUMNS)
         self.trip_contributions_ = pd.DataFrame(columns=CONTRIBUTION_COLUMNS)
-        self.feature_contributions_ = pd.DataFrame(
-            columns=RANKED_CONTRIBUTION_COLUMNS
-        )
+        self.feature_contributions_ = pd.DataFrame(columns=RANKED_CONTRIBUTION_COLUMNS)
         self.driver_scores_ = pd.DataFrame(columns=DRIVER_SCORE_COLUMNS)
 
     def score_trips(self, trip_features: pd.DataFrame) -> pd.DataFrame:
@@ -72,8 +70,8 @@ class DriverRiskModel:
         scores, contributions = self._trip_scorer.score(trip_features)
         self.trip_scores_ = scores
         self.trip_contributions_ = contributions
-        self.feature_contributions_ = (
-            self._trip_scorer.ranked_feature_contributions(contributions)
+        self.feature_contributions_ = self._trip_scorer.ranked_feature_contributions(
+            contributions
         )
         return scores.copy()
 
@@ -96,6 +94,8 @@ class DriverRiskModel:
 def list_scoring_methods() -> pd.DataFrame:
     """List the two implemented, label-free methods and their intended roles."""
 
-    return pd.DataFrame.from_dict(SCORING_METHODS, orient="index").rename_axis(
-        "method"
-    ).reset_index()
+    return (
+        pd.DataFrame.from_dict(SCORING_METHODS, orient="index")
+        .rename_axis("method")
+        .reset_index()
+    )

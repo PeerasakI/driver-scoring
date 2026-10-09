@@ -1,0 +1,773 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Mobility data ingestion, trip feature engineering, and driver risk scoring">
+      
+      
+      
+      
+      
+        <link rel="next" href="../task0-EDA.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Home - Mobility Insight</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#mobility-insight-project-overview" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Mobility Insight" class="md-header__button md-logo" aria-label="Mobility Insight" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Mobility Insight
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Mobility Insight" class="md-nav__button md-logo" aria-label="Mobility Insight" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Mobility Insight
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../task0-EDA.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Task 0 — Data Exploration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../task1-overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Task 1 — Parse and Unify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../task2-overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Task 2 — Trip Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../task3-overview.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Task 3 — Driver Risk Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../review-paper.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Literature Review
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="mobility-insight-project-overview">MOBILITY INSIGHT PROJECT OVERVIEW<a class="headerlink" href="#mobility-insight-project-overview" title="Permanent link">&para;</a></h1>
+<h1 id="1">1. เป้าหมายของงาน<a class="headerlink" href="#1" title="Permanent link">&para;</a></h1>
+<p>โปรเจกต์นี้แปลงข้อมูล telematics จากผู้ให้บริการ 3 แหล่งให้เป็นข้อมูลมาตรฐาน
+จากนั้นแบ่งข้อมูลเป็น trip, สร้าง trip features และคำนวณคะแนนความปลอดภัย
+ระดับรถหรือผู้ขับขี่ โดยออกแบบให้รองรับข้อมูลที่มีรายละเอียดไม่เท่ากัน</p>
+<h2 id="_1">ลำดับการทำงานหลัก<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>Bronze raw files
+  -&gt; Task 1: Parse and Unify
+  -&gt; Unified GPS Event Stream / Silver
+  -&gt; Task 2: Trip Segmentation and Feature Engineering
+  -&gt; Trip Features / Gold
+  -&gt; Task 3: Trip Risk Score
+  -&gt; Cold-start-adjusted Vehicle Score
+</code></pre></div>
+<h2 id="task-4-production-streaming">Task 4 เป็นเอกสารเสนอแนวทางนำระบบไปใช้งานใน production เช่น streaming,<a class="headerlink" href="#task-4-production-streaming" title="Permanent link">&para;</a></h2>
+<p>privacy, spatial aggregation, scale และ model lifecycle</p>
+<h1 id="2">2. โครงสร้างโฟลเดอร์ระดับบน<a class="headerlink" href="#2" title="Permanent link">&para;</a></h1>
+<p>Project root: <code>mobility-insight_task/</code></p>
+<p>ตารางนี้แสดงเฉพาะโฟลเดอร์ที่อยู่ใต้ project root หนึ่งระดับ โดยไม่ลงรายละเอียด
+subfolder ภายในแต่ละโฟลเดอร์</p>
+<table>
+<thead>
+<tr>
+<th>Folder</th>
+<th>หน้าที่</th>
+<th>ประเภท</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.git/</code></td>
+<td>เก็บ Git metadata และประวัติการเปลี่ยนแปลงของ repository</td>
+<td>เครื่องมือพัฒนา</td>
+</tr>
+<tr>
+<td><code>.mypy_cache/</code></td>
+<td>Cache จากการตรวจ static type; ลบแล้วสร้างใหม่ได้</td>
+<td>Generated cache</td>
+</tr>
+<tr>
+<td><code>.pytest_cache/</code></td>
+<td>Cache จากการรัน pytest; ลบแล้วสร้างใหม่ได้</td>
+<td>Generated cache</td>
+</tr>
+<tr>
+<td><code>.venv/</code></td>
+<td>Python virtual environment และ dependencies ของเครื่องนี้</td>
+<td>Local environment</td>
+</tr>
+<tr>
+<td><code>articles/</code></td>
+<td>เก็บบทความและงานวิจัยที่ใช้อ้างอิงการออกแบบ scoring</td>
+<td>Reference material</td>
+</tr>
+<tr>
+<td><code>config/</code></td>
+<td>เก็บ YAML configuration แยกตาม task และค่าที่ใช้ร่วมกัน</td>
+<td>Configuration</td>
+</tr>
+<tr>
+<td><code>data/</code></td>
+<td>เก็บข้อมูลตาม Medallion layers: Bronze, Silver และ Gold</td>
+<td>Data storage</td>
+</tr>
+<tr>
+<td><code>docs/</code></td>
+<td>เก็บเอกสารภาพรวม, EDA report และ HTML overview ของแต่ละ task</td>
+<td>Documentation</td>
+</tr>
+<tr>
+<td><code>logs/</code></td>
+<td>เก็บ structured JSONL logs ที่เกิดจากการรัน pipeline</td>
+<td>Runtime output</td>
+</tr>
+<tr>
+<td><code>notebooks/</code></td>
+<td>เก็บ Jupyter notebooks สำหรับ EDA และการทดลองแบบ in-memory</td>
+<td>Exploration</td>
+</tr>
+<tr>
+<td><code>scripts/</code></td>
+<td>เก็บ command-line runners สำหรับรัน batch pipeline และเขียน output</td>
+<td>Operations</td>
+</tr>
+<tr>
+<td><code>src/</code></td>
+<td>เก็บ production implementation ของ ingestion, features และ scoring</td>
+<td>Application source</td>
+</tr>
+<tr>
+<td><code>submission/</code></td>
+<td>เก็บ public entry points และเอกสาร deliverables ตามโจทย์</td>
+<td>Submission interface</td>
+</tr>
+<tr>
+<td><code>tests/</code></td>
+<td>เก็บ automated tests ของ Task 1, Task 2 และ Task 3</td>
+<td>Quality assurance</td>
+</tr>
+</tbody>
+</table>
+<h1 id="3">3. แหล่งข้อมูลต้นทาง<a class="headerlink" href="#3" title="Permanent link">&para;</a></h1>
+<h2 id="databronzetmjson">data/bronze/tm*.json<a class="headerlink" href="#databronzetmjson" title="Permanent link">&para;</a></h2>
+<p>ข้อมูล Toyota TMT มี packet 0x51 และ 0x52
+  มี GPS, event code และ CAN signals บางรายการ
+  สถานะเครื่องยนต์ต้อง derive จาก event code ตามลำดับเวลา
+  ไม่สามารถใช้ event_type เป็นค่า ON/OFF ของแต่ละแถวโดยตรง</p>
+<h2 id="databronzewdmtjson">data/bronze/wdmt.json<a class="headerlink" href="#databronzewdmtjson" title="Permanent link">&para;</a></h2>
+<p>ข้อมูล WDMT / True Leasing
+  ใช้ registration เป็น vehicle_id
+  เป็นข้อมูล GPS-only และไม่มีสถานะเครื่องยนต์ที่เชื่อถือได้</p>
+<h2 id="databronzescgjwdcsv">data/bronze/scgjwd.csv<a class="headerlink" href="#databronzescgjwdcsv" title="Permanent link">&para;</a></h2>
+<p>ข้อมูล SCGJWD Logistics
+  ใช้ IMEI เป็น vehicle_id
+  มีข้อมูล GPS และสถานะเครื่องยนต์</p>
+<p>ระบบสามารถทำงานได้แม้ input มาไม่ครบทั้ง 3 sources
+พฤติกรรมเมื่อ source หายกำหนดได้จาก config/task1_ingestion.yaml</p>
+<h1 id="4">4. โครงสร้างข้อมูล<a class="headerlink" href="#4" title="Permanent link">&para;</a></h1>
+<h2 id="databronze">data/bronze/<a class="headerlink" href="#databronze" title="Permanent link">&para;</a></h2>
+<p>เก็บ raw input จาก partner โดยยังไม่ปรับ schema</p>
+<h2 id="datasilver">data/silver/<a class="headerlink" href="#datasilver" title="Permanent link">&para;</a></h2>
+<p>เก็บ Unified GPS Event Stream จาก Task 1
+  หนึ่งแถวแทนหนึ่งเหตุการณ์ของรถหลังผ่าน validation และ normalization</p>
+<h2 id="datagold">data/gold/<a class="headerlink" href="#datagold" title="Permanent link">&para;</a></h2>
+<p>เก็บข้อมูลระดับ trip และ features ที่ Task 2 สร้างขึ้น</p>
+<h1 id="5-common-layer">5. Common layer<a class="headerlink" href="#5-common-layer" title="Permanent link">&para;</a></h1>
+<h2 id="srcmobilitycommonconfigpy">src/mobility/common/config.py<a class="headerlink" href="#srcmobilitycommonconfigpy" title="Permanent link">&para;</a></h2>
+<p>อ่าน YAML และ validate configuration ด้วย Pydantic
+  รวม settings models ของ Task 1, Task 2 และ Task 3
+  แต่ละ task ใช้ config ของตนเองและใช้ common.yaml ร่วมกัน</p>
+<h2 id="srcmobilitycommonschemaspy">src/mobility/common/schemas.py<a class="headerlink" href="#srcmobilitycommonschemaspy" title="Permanent link">&para;</a></h2>
+<p>เก็บ data contracts และ enums ที่ใช้ร่วมกัน
+  model สำคัญ ได้แก่ UnifiedGPSEvent, TripFeature, TripRisk และ DriverRisk
+  ช่วยตรวจชนิดข้อมูล, timezone, ช่วงคะแนน และค่าที่อนุญาต</p>
+<h2 id="srcmobilitycommongeo_utilspy">src/mobility/common/geo_utils.py<a class="headerlink" href="#srcmobilitycommongeo_utilspy" title="Permanent link">&para;</a></h2>
+<p>เก็บฟังก์ชันภูมิศาสตร์ที่ใช้ร่วมกัน เช่น Haversine distance</p>
+<h2 id="srcmobilitycommonloggerpy">src/mobility/common/logger.py<a class="headerlink" href="#srcmobilitycommonloggerpy" title="Permanent link">&para;</a></h2>
+<p>สร้าง structured JSON logging และ helper สำหรับบันทึก event</p>
+<h2 id="configcommonyaml">config/common.yaml<a class="headerlink" href="#configcommonyaml" title="Permanent link">&para;</a></h2>
+<p>ค่า project-level ที่ทุก task ใช้ร่วมกัน เช่น timezone และ path หลัก</p>
+<h1 id="6-task-1-parse-and-unify">6. Task 1: Parse and Unify<a class="headerlink" href="#6-task-1-parse-and-unify" title="Permanent link">&para;</a></h1>
+<h2 id="public-api">Public API<a class="headerlink" href="#public-api" title="Permanent link">&para;</a></h2>
+<h3 id="submissionparserpy">submission/parser.py<a class="headerlink" href="#submissionparserpy" title="Permanent link">&para;</a></h3>
+<p>Entry point ตามโจทย์
+  ให้ฟังก์ชัน parse_all(tmt_files, wdmt_file, scgjwd_file)
+  เป็น wrapper บาง ๆ ที่สร้าง IngestionPipeline จาก YAML แล้วเรียก parse_all ตัวจริง</p>
+<h2 id="production-implementation">Production implementation<a class="headerlink" href="#production-implementation" title="Permanent link">&para;</a></h2>
+<h3 id="srcmobilitytask1_ingestionpipelinepy">src/mobility/task1_ingestion/pipeline.py<a class="headerlink" href="#srcmobilitytask1_ingestionpipelinepy" title="Permanent link">&para;</a></h3>
+<p>Orchestrate parser ของทุก source
+  ตรวจว่าไฟล์ใดมีอยู่, ข้าม source ที่ไม่มี input ตาม policy, รวมผลลัพธ์,
+  เก็บ parse issues และเรียง output ตาม vehicle_id และ recorded_at
+  มี write_silver() สำหรับเขียน Parquet แบบ overwrite หรือ append พร้อม deduplication</p>
+<h3 id="srcmobilitytask1_ingestionbasepy">src/mobility/task1_ingestion/base.py<a class="headerlink" href="#srcmobilitytask1_ingestionbasepy" title="Permanent link">&para;</a></h3>
+<p>BaseParser ที่ parser ทุก source ใช้ร่วมกัน
+  รับผิดชอบ sanitization เช่นแปลง null, "-", missing value และค่าตัวเลขผิดรูปแบบ
+  ให้เป็นค่ามาตรฐานโดยไม่ทำให้ทั้ง pipeline crash</p>
+<h3 id="srcmobilitytask1_ingestionparserstmtpy">src/mobility/task1_ingestion/parsers/tmt.py<a class="headerlink" href="#srcmobilitytask1_ingestionparserstmtpy" title="Permanent link">&para;</a></h3>
+<p>Parser สำหรับ TMT packet 0x51 และ 0x52
+  รวม packet ของรถคันเดียวกันตามเวลา และ derive engine state ด้วย state machine
+  event code 33 เปลี่ยนเป็น ON, 34 เปลี่ยนเป็น OFF และ 30 รักษาสถานะเดิม
+  อ่าน CAN fields เช่น fuel rate, RPM, accelerator position และ brake state</p>
+<h3 id="srcmobilitytask1_ingestionparserswdmtpy">src/mobility/task1_ingestion/parsers/wdmt.py<a class="headerlink" href="#srcmobilitytask1_ingestionparserswdmtpy" title="Permanent link">&para;</a></h3>
+<p>Parser สำหรับ WDMT JSON
+  แปลง timestamp, coordinate, speed และ odometer เข้าสู่ unified schema
+  engine_on และ CAN-only fields เป็น null เมื่อ source ไม่มีข้อมูล</p>
+<h3 id="srcmobilitytask1_ingestionparsersscgjwdpy">src/mobility/task1_ingestion/parsers/scgjwd.py<a class="headerlink" href="#srcmobilitytask1_ingestionparsersscgjwdpy" title="Permanent link">&para;</a></h3>
+<p>Parser สำหรับ SCGJWD CSV
+  แปลง IMEI, timestamp, coordinate, speed และ engine state</p>
+<h3 id="srcmobilitytask1_ingestiongap_imputerpy">src/mobility/task1_ingestion/gap_imputer.py<a class="headerlink" href="#srcmobilitytask1_ingestiongap_imputerpy" title="Permanent link">&para;</a></h3>
+<p>Utility สำหรับทดลองเติม GPS gap ระยะสั้น
+  แยกจาก parse flow หลักเพื่อไม่ให้ข้อมูลที่คาดการณ์ปะปนกับข้อมูลจริงโดยอัตโนมัติ</p>
+<h3 id="configtask1_ingestionyaml">config/task1_ingestion.yaml<a class="headerlink" href="#configtask1_ingestionyaml" title="Permanent link">&para;</a></h3>
+<p>กำหนด missing-source policy, invalid-record policy, TMT event codes,
+  output path, write mode และ deduplication</p>
+<h3 id="scriptsrun_task1py">scripts/run_task1.py<a class="headerlink" href="#scriptsrun_task1py" title="Permanent link">&para;</a></h3>
+<p>Command-line runner สำหรับอ่าน data/bronze และเขียน Silver Parquet
+  ใช้ IngestionPipeline เดียวกับ public API จึงไม่ duplicate parsing logic</p>
+<h3 id="teststest_task1_parserspy">tests/test_task1_parsers.py<a class="headerlink" href="#teststest_task1_parserspy" title="Permanent link">&para;</a></h3>
+<p>ทดสอบ parser, schema normalization, engine state และ missing-source behavior</p>
+<h1 id="7-task-2-trip-segmentation-and-features">7. Task 2: Trip Segmentation and Features<a class="headerlink" href="#7-task-2-trip-segmentation-and-features" title="Permanent link">&para;</a></h1>
+<h2 id="public-api_1">Public API<a class="headerlink" href="#public-api_1" title="Permanent link">&para;</a></h2>
+<h3 id="submissionfeaturespy">submission/features.py<a class="headerlink" href="#submissionfeaturespy" title="Permanent link">&para;</a></h3>
+<p>Entry point ตามโจทย์
+  ให้ฟังก์ชัน build_trip_features(unified_stream)
+  สร้าง TripFeatureExtractor จาก YAML และคืน pandas DataFrame โดยไม่เขียนไฟล์</p>
+<h2 id="production-implementation_1">Production implementation<a class="headerlink" href="#production-implementation_1" title="Permanent link">&para;</a></h2>
+<h3 id="srcmobilitytask2_featuressegmenterpy">src/mobility/task2_features/segmenter.py<a class="headerlink" href="#srcmobilitytask2_featuressegmenterpy" title="Permanent link">&para;</a></h3>
+<p>แบ่ง event ของรถแต่ละคันเป็น trip</p>
+<h4 id="engine_and_gap">engine_and_gap:<a class="headerlink" href="#engine_and_gap" title="Permanent link">&para;</a></h4>
+<pre><code>ใช้เมื่อรถมี engine_on
+trip เริ่มเมื่อเครื่องยนต์ ON
+trip จบเมื่อเครื่องยนต์ OFF หรือ gap มากกว่า threshold
+</code></pre>
+<h4 id="gps_gap_fallback">gps_gap_fallback:<a class="headerlink" href="#gps_gap_fallback" title="Permanent link">&para;</a></h4>
+<pre><code>ใช้เมื่อ engine_on เป็น null ทุก record
+แบ่ง trip จาก time gap เพียงอย่างเดียว
+เป็น fallback ที่มีหลักฐานน้อยกว่า engine-aware segmentation
+</code></pre>
+<p>หลังแบ่งแล้วจะตัด segment ที่สั้นกว่า minimum duration</p>
+<h3 id="srcmobilitytask2_featuresharsh_eventspy">src/mobility/task2_features/harsh_events.py<a class="headerlink" href="#srcmobilitytask2_featuresharsh_eventspy" title="Permanent link">&para;</a></h3>
+<p>ตรวจ harsh acceleration และ harsh braking จากการเปลี่ยนความเร็วตามเวลา
+  ใช้ threshold และ maximum sampling interval จาก YAML</p>
+<h3 id="srcmobilitytask2_featuresfeature_extractorpy">src/mobility/task2_features/feature_extractor.py<a class="headerlink" href="#srcmobilitytask2_featuresfeature_extractorpy" title="Permanent link">&para;</a></h3>
+<p>Validate Unified GPS Event Stream, เรียก TripSegmenter และสร้างหนึ่งแถวต่อ trip
+  คำนวณ duration, distance, speed statistics, harsh-event counts, idle ratio,
+  time-of-day risk, fuel rate, RPM และ data grade
+  ใช้ odometer delta เมื่อใช้ได้ มิฉะนั้นใช้ Haversine distance
+  มี write_gold() สำหรับเขียนผลแบบ overwrite หรือ append</p>
+<h3 id="configtask2_featuresyaml">config/task2_features.yaml<a class="headerlink" href="#configtask2_featuresyaml" title="Permanent link">&para;</a></h3>
+<p>กำหนด gap threshold, minimum trip duration, GPS fallback, harsh-event thresholds,
+  idle rule, time-of-day windows และ Gold output policy</p>
+<h3 id="scriptsrun_task2py">scripts/run_task2.py<a class="headerlink" href="#scriptsrun_task2py" title="Permanent link">&para;</a></h3>
+<p>อ่าน Silver Parquet, เรียก TripFeatureExtractor และเขียน Gold Parquet</p>
+<h3 id="teststest_task2_featurespy">tests/test_task2_features.py<a class="headerlink" href="#teststest_task2_featurespy" title="Permanent link">&para;</a></h3>
+<p>ทดสอบ segmentation, minimum-duration filter, GPS fallback และ feature calculations</p>
+<h1 id="8-task-3-driver-risk-model">8. Task 3: Driver Risk Model<a class="headerlink" href="#8-task-3-driver-risk-model" title="Permanent link">&para;</a></h1>
+<h2 id="public-api_2">Public API<a class="headerlink" href="#public-api_2" title="Permanent link">&para;</a></h2>
+<h3 id="submissionmodelpy">submission/model.py<a class="headerlink" href="#submissionmodelpy" title="Permanent link">&para;</a></h3>
+<p>ให้ class DriverRiskModel และ list_scoring_methods()
+  การทำงานเป็น trip-first: score_trips() ก่อน แล้ว aggregate_drivers()
+  method เริ่มต้นคือ weighted_composite</p>
+<h2 id="srcmobilitytask3_scoringtrip_scorerpy">src/mobility/task3_scoring/trip_scorer.py<a class="headerlink" href="#srcmobilitytask3_scoringtrip_scorerpy" title="Permanent link">&para;</a></h2>
+<p>คำนวณคะแนนระดับ trip ช่วง 0-100 โดย 100 หมายถึงปลอดภัยที่สุด</p>
+<h3 id="weighted_composite">weighted_composite:<a class="headerlink" href="#weighted_composite" title="Permanent link">&para;</a></h3>
+<pre><code>วิธีหลักแบบ rule-based
+หักคะแนนตาม feature, threshold และ weight ที่ประกาศใน YAML
+อธิบาย contribution ของแต่ละ feature ได้ตรงไปตรงมา
+</code></pre>
+<h3 id="robust_zscore">robust_zscore:<a class="headerlink" href="#robust_zscore" title="Permanent link">&para;</a></h3>
+<pre><code>วิธี challenger แบบ unsupervised
+ใช้ median และ MAD ภายใน cohort source + data_grade
+ตรวจพฤติกรรมที่ผิดจากกลุ่มโดยไม่ต้องสร้าง labels ปลอม
+ผลเป็น relative anomaly และไม่ใช่ accident probability
+</code></pre>
+<h3 id="srcmobilitytask3_scoringdriver_aggregatorpy">src/mobility/task3_scoring/driver_aggregator.py<a class="headerlink" href="#srcmobilitytask3_scoringdriver_aggregatorpy" title="Permanent link">&para;</a></h3>
+<p>รวมคะแนนหลาย trip เป็นคะแนนระดับรถโดยไม่ผสมความหมายของ Grade A และ Grade B
+  ใช้ Bayesian-style shrinkage ดึงคะแนนของรถที่มีข้อมูลน้อยเข้าหา prior score
+  แสดง confidence จากจำนวน trip</p>
+<h3 id="configtask3_scoringyaml">config/task3_scoring.yaml<a class="headerlink" href="#configtask3_scoringyaml" title="Permanent link">&para;</a></h3>
+<p>เก็บ score range, Grade A/B feature weights, thresholds, rationale,
+  literature reference keys, cold-start prior, confidence thresholds
+  และ robust-zscore settings</p>
+<h3 id="submissionscoring_designmd">submission/scoring_design.md<a class="headerlink" href="#submissionscoring_designmd" title="Permanent link">&para;</a></h3>
+<p>อธิบาย methodology, การเปรียบเทียบสองวิธี, data-grade behavior,
+  feature importance, cold start และข้อจำกัดจากการไม่มี labeled ground truth</p>
+<h3 id="teststest_task3_modelpy">tests/test_task3_model.py<a class="headerlink" href="#teststest_task3_modelpy" title="Permanent link">&para;</a></h3>
+<p>ทดสอบ trip scoring, grade separation, contribution ranking,
+  cold-start adjustment และ scoring methods</p>
+<h1 id="9-data-grades">9. Data grades และความหมายของผลลัพธ์<a class="headerlink" href="#9-data-grades" title="Permanent link">&para;</a></h1>
+<hr />
+<h2 id="grade-a">Grade A<a class="headerlink" href="#grade-a" title="Permanent link">&para;</a></h2>
+<p>มี CAN signals อย่างน้อยบางรายการ
+  ใช้ speed behavior, harsh events และข้อมูลที่เกี่ยวข้องกับการควบคุมรถ
+  ผลลัพธ์เรียกว่า Driver Risk Score</p>
+<h2 id="grade-b">Grade B<a class="headerlink" href="#grade-b" title="Permanent link">&para;</a></h2>
+<p>เป็นข้อมูล GPS-only หรือไม่มี CAN evidence ที่เพียงพอ
+  ใช้เฉพาะ speed-related features ที่สังเกตได้
+  ผลลัพธ์เรียกว่า Speed Behavior Index ไม่ใช่ full Driver Score</p>
+<p>คะแนนทั้งสองแบบเป็น behavior score ภายใต้กฎที่ประกาศไว้
+ไม่ใช่ probability ของอุบัติเหตุหรือราคาประกัน เพราะไม่มี labeled ground truth</p>
+<h1 id="10-task-4">10. Task 4 และเอกสารประกอบ<a class="headerlink" href="#10-task-4" title="Permanent link">&para;</a></h1>
+<h3 id="submissionsystem_designmd">submission/system_design.md<a class="headerlink" href="#submissionsystem_designmd" title="Permanent link">&para;</a></h3>
+<p>ตอบโจทย์ production system design ครอบคลุม batch/streaming boundary,
+  H3 resolution, PDPA, k-anonymity, engine-state bug, scale estimate
+  และ model lifecycle</p>
+<h3 id="docstask0-edahtml">docs/task0-EDA.html<a class="headerlink" href="#docstask0-edahtml" title="Permanent link">&para;</a></h3>
+<p>สรุป schema และการสำรวจ raw data จากทั้ง 3 sources</p>
+<h3 id="docstask1-overviewhtml">docs/task1-overview.html<a class="headerlink" href="#docstask1-overviewhtml" title="Permanent link">&para;</a></h3>
+<p>อธิบาย Task 1 workflow, files, parser behavior และ requirement compliance</p>
+<h3 id="docstask2-overviewhtml">docs/task2-overview.html<a class="headerlink" href="#docstask2-overviewhtml" title="Permanent link">&para;</a></h3>
+<p>อธิบาย Task 2 workflow, segmentation methods, feature output และ files</p>
+<h3 id="docstask3-overviewhtml">docs/task3-overview.html<a class="headerlink" href="#docstask3-overviewhtml" title="Permanent link">&para;</a></h3>
+<p>อธิบาย scoring workflow, สอง scoring methods, cold start,
+  feature contributions และ requirement traceability</p>
+<h3 id="articles">articles/<a class="headerlink" href="#articles" title="Permanent link">&para;</a></h3>
+<p>เก็บบทความและงานวิจัยที่ใช้สนับสนุน feature choice และ scoring rationale</p>
+<h1 id="11-notebooks">11. Notebooks<a class="headerlink" href="#11-notebooks" title="Permanent link">&para;</a></h1>
+<p>notebooks/00_end_to_end_eda.ipynb
+  รัน Task 1 -&gt; Task 2 -&gt; Task 3 ใน memory เพื่อทดสอบ flow ทั้งระบบ</p>
+<p>notebooks/task1/01_tmt_exploration.ipynb
+notebooks/task1/02_wdmt_exploration.ipynb
+notebooks/task1/03_scgjwd_exploration.ipynb
+  สำรวจ schema และคุณภาพข้อมูลแยกตาม source</p>
+<p>notebooks/task2/01_trip_segmentation_experiments.ipynb
+  ทดลอง boundary strategies และ gap thresholds หลายแบบ
+  เปรียบเทียบกับ TripSegmenter ตัว production โดยไม่แก้ YAML หรือเขียนข้อมูล</p>
+<p>notebooks/task2/02_trip_features_eda.ipynb
+  สำรวจผล trip segmentation, feature distributions และ null coverage</p>
+<h1 id="12-entry-points">12. Entry points<a class="headerlink" href="#12-entry-points" title="Permanent link">&para;</a></h1>
+<p>ใช้ตาม deliverable โดยไม่เขียนข้อมูล:</p>
+<p>from submission.parser import parse_all
+  from submission.features import build_trip_features
+  from submission.model import DriverRiskModel</p>
+<p>ใช้สำหรับ batch pipeline ที่ต้องการ persist ข้อมูล:</p>
+<p>uv run python scripts/run_task1.py
+  uv run python scripts/run_task2.py</p>
+<p>ใช้ตรวจสอบระบบ:</p>
+<p>uv run pytest</p>
+<h1 id="13">13. หลักการออกแบบ<a class="headerlink" href="#13" title="Permanent link">&para;</a></h1>
+<ul>
+<li>Public entry points มีขนาดเล็กและ reuse implementation จาก src</li>
+<li>Business rules อยู่ใน src และ YAML ไม่กระจายซ้ำใน scripts หรือ notebooks</li>
+<li>Common schema, config, geo utilities และ logger ใช้ร่วมกันทุก task</li>
+<li>Parser แยกตาม data source เพื่อเพิ่ม source ใหม่ได้โดยไม่แก้ parser เดิม</li>
+<li>การ parse, transform และ score ทำใน memory ได้ ส่วนการเขียนข้อมูลต้องเรียกฟังก์ชันเฉพาะ</li>
+<li>รองรับ partial sources และ malformed records ตาม policy</li>
+<li>Grade A และ Grade B แยกความหมายของคะแนนอย่างชัดเจน</li>
+<li>ทุกคะแนนมี contribution และ configuration ที่ตรวจสอบย้อนกลับได้</li>
+<li>Notebook ใช้เพื่อสำรวจและอธิบาย ส่วน production logic กำหนดไว้ใน src</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "search.highlight", "search.suggest"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

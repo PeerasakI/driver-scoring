@@ -1,0 +1,38 @@
+site_name: Mobility Insight
+site_description: Mobility data ingestion, trip feature engineering, and driver risk scoring
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - search.suggest
+
+nav:
+  - Home: project-overview.md
+  - Task 0 — Data Exploration: task0-EDA.html
+  - Task 1 — Parse and Unify: task1-overview.html
+  - Task 2 — Trip Features: task2-overview.html
+  - Task 3 — Driver Risk Model: task3-overview.html
+  - Literature Review: review-paper.html
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+
+exclude_docs: |
+  *.ipynb
+

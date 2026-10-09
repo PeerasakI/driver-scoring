@@ -33,7 +33,9 @@ def main() -> None:
     output = extractor.write_gold(features)
     print(f"Wrote {len(features):,} trip features to {output}")
     if extractor.last_issues:
-        print(f"Rejected {len(extractor.last_issues):,} input records; see the JSONL log")
+        print(
+            f"Rejected {len(extractor.last_issues):,} input records; see the JSONL log"
+        )
 
 
 if __name__ == "__main__":

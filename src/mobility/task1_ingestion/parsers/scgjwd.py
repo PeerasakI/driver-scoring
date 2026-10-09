@@ -54,7 +54,9 @@ class SCGJWDParser(BaseParser):
             try:
                 import pandas as pd
             except ImportError as exc:  # pragma: no cover - dependency error path
-                raise RuntimeError("pandas/openpyxl is required for Excel input") from exc
+                raise RuntimeError(
+                    "pandas/openpyxl is required for Excel input"
+                ) from exc
             frame = pd.read_excel(path, dtype={"IMEI": str})
             yield from frame.to_dict(orient="records")
             return

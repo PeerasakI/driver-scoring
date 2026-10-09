@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telematics & CAN Data Dictionary</title>
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #2D3748;
+        background-color: #F7FAFC;
+        margin: 0;
+        padding: 40px 20px;
+    }
+    .container {
+        max-width: 1100px;
+        margin: auto;
+        background: #FFFFFF;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    h1 {
+        color: #1A365D;
+        font-size: 28px;
+        margin-top: 0;
+        border-bottom: 2px solid #E2E8F0;
+        padding-bottom: 12px;
+    }
+    h2 {
+        color: #2B6CB0;
+        font-size: 20px;
+        margin-top: 36px;
+        margin-bottom: 8px;
+    }
+    p.subtitle {
+        color: #718096;
+        font-size: 15px;
+        margin-top: -6px;
+        margin-bottom: 24px;
+    }
+    .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 6px;
+    }
+    .badge-grade-a { background: #C6F6D5; color: #22543D; }
+    .badge-grade-b { background: #FEEBC8; color: #744210; }
+    .badge-mapped { background: #EBF8FF; color: #2B6CB0; font-family: monospace; }
+    .badge-unmapped { background: #EDF2F7; color: #A0AEC0; }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0 28px 0;
+        font-size: 14px;
+    }
+    th {
+        background-color: #1A365D;
+        color: #FFFFFF;
+        text-align: left;
+        padding: 10px 12px;
+        font-weight: 600;
+    }
+    td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #E2E8F0;
+        vertical-align: top;
+    }
+    tr:nth-child(even) td {
+        background-color: #F8FAFC;
+    }
+    tr:hover td {
+        background-color: #EDF2F7;
+    }
+    .code {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 13px;
+        color: #C53030;
+    }
+    .note {
+        margin: 14px 0 22px;
+        padding: 12px 14px;
+        border-left: 4px solid #2B6CB0;
+        border-radius: 6px;
+        background: #EBF8FF;
+        color: #2C5282;
+    }
+    .warning {
+        border-left-color: #DD6B20;
+        background: #FFFAF0;
+        color: #7B341E;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Telematics & CAN Data Dictionary</h1>
+    <p class="subtitle">พจนานุกรมข้อมูลจาก 3 แหล่ง (Toyota TMT, WDMT, SCGJWD) และการ Map เข้าสู่ Unified Schema สำหรับคำนวณ Driver Risk</p>
+
+    <h2>1. กรอบการประเมินตามคุณภาพข้อมูล (Data Grade Framework)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Grade</th>
+                <th>Data Source</th>
+                <th>Sampling Interval</th>
+                <th>สัญญาณหลักที่มี</th>
+                <th>Scoring Capability</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="badge badge-grade-a">Grade A</span></td>
+                <td><strong>TMT (Toyota)</strong></td>
+                <td>~1s CAN resolution</td>
+                <td>Speed, RPM, Accel Pos, Brake Switch, Fuel Rate, Odometer</td>
+                <td><strong>CAN-capable</strong>; current Unified stream uses event-level CAN only. Dense 1-second CAN remains outside the stream.</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-grade-b">Grade B</span></td>
+                <td><strong>WDMT (True Leasing)</strong></td>
+                <td>15–60 วินาที</td>
+                <td>GPS Speed, Lat/Lon, Odometer (บางคัน)</td>
+                <td><strong>Speed Behavior Index เท่านั้น</strong></td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-grade-b">Grade B</span></td>
+                <td><strong>SCGJWD Logistics</strong></td>
+                <td>60 วินาที (1 นาที)</td>
+                <td>GPS Speed, Lat/Lon, Engine Status (Y/N)</td>
+                <td><strong>Speed Behavior Index เท่านั้น</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Source A — Toyota / TCAP (TMT) <span class="badge badge-grade-a">Grade A</span></h2>
+    <p>ข้อมูล JSON แบบ asymmetric: <code>B2B event</code> ในไฟล์ 0x52 และ <code>B2B Event List</code> ในไฟล์ 0x51 การหา engine state ต้องรวมทั้งสอง packet แล้วประมวลผล event code ตามเวลา ไม่ควรอนุมานสถานะจากชนิด packet</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Field Name / Path</th>
+                <th>Data Type</th>
+                <th>คำอธิบายสัญญาณ</th>
+                <th>Unified Schema Field</th>
+                <th>Transformation / Logic</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="code">Timestamp</span> / <span class="code">GPS.Timestamp</span></td>
+                <td>string</td>
+                <td>วันเวลาเกิดเหตุการณ์ (YYYYMMDDHHMMSS)</td>
+                <td><span class="badge badge-mapped">recorded_at</span></td>
+                <td>ใช้ event <code>Timestamp</code> เป็นหลัก และ fallback ไป <code>GPS.Timestamp</code>; แปลงเป็น Timezone-aware UTC+7</td>
+            </tr>
+            <tr>
+                <td><span class="code">Licence card</span> / ingestion filename</td>
+                <td>dict / str</td>
+                <td>รหัสรถจาก payload; แต่ supplied fixtures มีค่า <code>{}</code> ทุกไฟล์</td>
+                <td><span class="badge badge-mapped">vehicle_id</span></td>
+                <td>ค้นหา source identifier ก่อน; fixture เท่านั้นจึง fallback เป็น token <code>tm01/tm02/tm03</code> จากชื่อไฟล์และบันทึก warning</td>
+            </tr>
+            <tr>
+                <td><span class="code">GPS.Lat angle</span></td>
+                <td>string (float)</td>
+                <td>พิกัดละติจูด (องศา)</td>
+                <td><span class="badge badge-mapped">lat</span></td>
+                <td>แปลงเป็น float</td>
+            </tr>
+            <tr>
+                <td><span class="code">GPS.Lon angle</span></td>
+                <td>string (float)</td>
+                <td>พิกัดลองจิจูด (องศา)</td>
+                <td><span class="badge badge-mapped">lon</span></td>
+                <td>แปลงเป็น float</td>
+            </tr>
+            <tr>
+                <td><span class="code">Vehicle speed</span></td>
+                <td>string (float)</td>
+                <td>ความเร็วขณะเกิดเหตุการณ์ (km/h)</td>
+                <td><span class="badge badge-mapped">speed_kmh</span></td>
+                <td>แปลงเป็น float</td>
+            </tr>
+            <tr>
+                <td><span class="code">Event type</span></td>
+                <td>string</td>
+                <td>รหัสประเภทเหตุการณ์ (33, 30, 34)</td>
+                <td><span class="badge badge-mapped">engine_on</span></td>
+                <td>DFA ต่อรถ: 33 &rarr; ON, 34 &rarr; OFF, 30 &rarr; carry state เดิม; ถ้ายังไม่มี transition ให้คง <code>None</code></td>
+            </tr>
+            <tr>
+                <td><span class="code">CAN List[].CAN.Total Distance Traveled</span></td>
+                <td>string (numeric)</td>
+                <td>ระยะทางสะสม; fixture behavior สอดคล้องกับหน่วยกิโลเมตร แต่ production contract ต้องยืนยันหน่วย</td>
+                <td><span class="badge badge-mapped">odometer_km</span></td>
+                <td>Parser ปัจจุบันแปลงเป็น float โดยตรงโดยไม่มี unit conversion</td>
+            </tr>
+            <tr>
+                <td><span class="code">CAN List[].CAN.Vehicle Fuel Rate</span></td>
+                <td>string (float)</td>
+                <td>อัตราสิ้นเปลืองน้ำมัน (L/hr)</td>
+                <td><span class="badge badge-mapped">fuel_rate_lh</span></td>
+                <td>แปลงเป็น float</td>
+            </tr>
+            <tr>
+                <td><span class="code">CAN List[].CAN.Engine Speed</span> / <span class="code">Engine RPM by direct line</span></td>
+                <td>string (float)</td>
+                <td>รอบการทำงานของเครื่องยนต์ (RPM)</td>
+                <td><span class="badge badge-mapped">engine_rpm</span></td>
+                <td>ใช้ CAN Engine Speed ก่อน และ fallback ไป Engine RPM by direct line</td>
+            </tr>
+            <tr>
+                <td><span class="code">CAN List[].CAN.Accel Position</span></td>
+                <td>string (float)</td>
+                <td>ตำแหน่งแป้นคันเร่ง (%)</td>
+                <td><span class="badge badge-mapped">accel_position</span></td>
+                <td>แปลงเป็น float (0–100)</td>
+            </tr>
+            <tr>
+                <td><span class="code">CAN List[].CAN.Stop Light Switch</span></td>
+                <td>string (int)</td>
+                <td>สถานะสวิตช์ไฟเบรก (0 = ไม่เหยียบ, 1 = เหยียบ)</td>
+                <td><span class="badge badge-mapped">brake_active</span></td>
+                <td>1 &rarr; True, 0 &rarr; False</td>
+            </tr>
+            <tr>
+                <td><span class="code">CAN List[].CAN.Fuel Input</span></td>
+                <td>string</td>
+                <td>ระดับน้ำมันในถัง</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+            <tr>
+                <td><span class="code">CAN List[].WNG.+B Voltage Value</span></td>
+                <td>string</td>
+                <td>แรงดันไฟฟ้าแบตเตอรี่ (V)</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+            <tr>
+                <td><span class="code">Contained data List[]</span></td>
+                <td>array</td>
+                <td>CAN Bus time-series ย้อนหลังระดับ 1 วินาที</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่สร้างเป็น Unified GPS event เพราะแต่ละวินาทีไม่มีพิกัดใหม่; ควรแยกเป็น CAN time-series หากขยายระบบ</td>
+            </tr>
+            <tr>
+                <td><span class="code">Vehicle speed List[]</span><br><span class="code">Engine RPM List[]</span></td>
+                <td>array</td>
+                <td>ลำดับค่าความเร็วและ RPM ภายใน packet โดยไม่มี timestamp ราย item</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+            <tr>
+                <td><span class="code">GPS.Caputure</span>, <span class="code">GPS.Lat direct</span>, <span class="code">GPS.Lon direct</span>, <span class="code">GPS.direction</span></td>
+                <td>string</td>
+                <td>GPS metadata, hemisphere flags และ bearing</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+            <tr>
+                <td><span class="code">Number of B2B event</span>, <span class="code">Number of unsent message</span>, <span class="code">RFID List</span>, <span class="code">Common header.*</span>, <span class="code">CAN List[].Timestamp</span></td>
+                <td>string / array / object</td>
+                <td>Packet metadata และ observation timestamps ระดับ signal</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema; เก็บไว้ใน Bronze เพื่อ audit</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="note warning"><strong>Vehicle identity audit:</strong> supplied TMT payloads ไม่มี source-native identifier ที่ใช้ได้จริง การใช้ชื่อไฟล์เป็นเพียง fixture assumption ไม่ใช่คำตอบ production ตาม requirement. Production ต้องรับ immutable partner vehicle/device ID ใน payload หรือ signed delivery manifest และตั้ง <code>vehicle_id_fallback: error</code>.</div>
+
+    <h2>3. Source B — WDMT / True Leasing (Wonder Matics) <span class="badge badge-grade-b">Grade B</span></h2>
+    <p>ข้อมูล JSON Array ทุก 15–60 วินาที ไม่มีสัญญาณ CAN Bus</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Field Name</th>
+                <th>Data Type</th>
+                <th>คำอธิบายสัญญาณ</th>
+                <th>Unified Schema Field</th>
+                <th>Transformation / Logic</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="code">registration</span></td>
+                <td>string</td>
+                <td>ป้ายทะเบียนรถยนต์</td>
+                <td><span class="badge badge-mapped">vehicle_id</span></td>
+                <td>ใช้เป็น Native Identifier โดยตรง</td>
+            </tr>
+            <tr>
+                <td><span class="code">local_timestamp</span></td>
+                <td>string</td>
+                <td>วันเวลาท้องถิ่น (YYYY-MM-DD HH:MM:SS)</td>
+                <td><span class="badge badge-mapped">recorded_at</span></td>
+                <td>แปลงเป็น Timezone-aware UTC+7</td>
+            </tr>
+            <tr>
+                <td><span class="code">lat</span></td>
+                <td>float</td>
+                <td>พิกัดละติจูด</td>
+                <td><span class="badge badge-mapped">lat</span></td>
+                <td>ใช้ค่า float โดยตรง</td>
+            </tr>
+            <tr>
+                <td><span class="code">lon</span></td>
+                <td>float</td>
+                <td>พิกัดลองจิจูด</td>
+                <td><span class="badge badge-mapped">lon</span></td>
+                <td>ใช้ค่า float โดยตรง</td>
+            </tr>
+            <tr>
+                <td><span class="code">speed</span></td>
+                <td>int ใน fixture &rarr; float</td>
+                <td>ความเร็วรถยนต์ (km/h)</td>
+                <td><span class="badge badge-mapped">speed_kmh</span></td>
+                <td>แปลงเป็น float</td>
+            </tr>
+            <tr>
+                <td><span class="code">mileage</span></td>
+                <td>float</td>
+                <td>ระยะทางสะสม Odometer (km)</td>
+                <td><span class="badge badge-mapped">odometer_km</span></td>
+                <td>แปลงเป็น float (รองรับค่าว่าง/null)</td>
+            </tr>
+            <tr>
+                <td><em>(ไม่มีสัญญาณ CAN)</em></td>
+                <td>-</td>
+                <td>ไม่มีรอบเครื่องยนต์ / คันเร่ง / เบรก / Fuel Rate</td>
+                <td><span class="badge badge-mapped">fuel_rate_lh</span> <span class="badge badge-mapped">engine_rpm</span><br><span class="badge badge-mapped">accel_position</span> <span class="badge badge-mapped">brake_active</span></td>
+                <td>กำหนดค่าเป็น <code>None</code> ทั้งหมด</td>
+            </tr>
+            <tr>
+                <td><em>(ไม่มี engine signal)</em></td>
+                <td>-</td>
+                <td>ไม่ควรอนุมาน engine state จาก <code>speed &gt; 0</code> เพราะรถติดเครื่องขณะจอดได้</td>
+                <td><span class="badge badge-mapped">engine_on</span></td>
+                <td>กำหนดเป็น <code>None</code></td>
+            </tr>
+            <tr>
+                <td><span class="code">event_th</span>, <span class="code">event_en</span>, <span class="code">location_th</span>, <span class="code">location_en</span></td>
+                <td>string</td>
+                <td>ชื่อเหตุการณ์และคำอธิบายตำแหน่งสองภาษา</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+            <tr>
+                <td><span class="code">course</span>, <span class="code">type_of_fix</span>, <span class="code">no_of_satellite</span></td>
+                <td>int</td>
+                <td>ทิศทาง, ประเภท GPS fix และจำนวนดาวเทียม</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+            <tr>
+                <td><span class="code">internal_power</span>, <span class="code">external_power</span></td>
+                <td>int</td>
+                <td>ข้อมูลแรงดัน/กำลังไฟของอุปกรณ์</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+            <tr>
+                <td><span class="code">Temp1</span>, <span class="code">Temp2</span>, <span class="code">Temp3</span>, <span class="code">fuel_sensor</span>, <span class="code">fuel_canbus</span></td>
+                <td>string / int / null</td>
+                <td>Fixture มี Temp เป็น <code>"-"</code>, fuel_sensor เป็น 0 และ fuel_canbus เป็น null; ไม่ใช่ fuel rate หน่วย L/hr</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+            <tr>
+                <td><span class="code">driver_name</span></td>
+                <td>string / null</td>
+                <td>ชื่อผู้ขับขี่ เป็น PII และไม่ใช่ vehicle identifier</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>4. Source C — SCGJWD Logistics Fleet <span class="badge badge-grade-b">Grade B</span></h2>
+    <p>ข้อมูล CSV/XLSX Export ราย 60 วินาที ไม่มีสัญญาณ CAN Bus</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+                <th>คำอธิบายสัญญาณ</th>
+                <th>Unified Schema Field</th>
+                <th>Transformation / Logic</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="code">IMEI</span></td>
+                <td>string</td>
+                <td>รหัสประจำตัวกล่อง GPS 15 หลัก</td>
+                <td><span class="badge badge-mapped">vehicle_id</span></td>
+                <td>ใช้เป็น Native Identifier โดยตรงและเก็บเลขศูนย์นำหน้า; parser ปัจจุบันไม่มี TKNO fallback</td>
+            </tr>
+            <tr>
+                <td><span class="code">GPS_TIME</span></td>
+                <td>string</td>
+                <td>วันเวลา GPS (YYYY-MM-DD HH:MM:SS)</td>
+                <td><span class="badge badge-mapped">recorded_at</span></td>
+                <td>แปลงเป็น Timezone-aware UTC+7</td>
+            </tr>
+            <tr>
+                <td><span class="code">LATITUDE</span></td>
+                <td>float</td>
+                <td>พิกัดละติจูด</td>
+                <td><span class="badge badge-mapped">lat</span></td>
+                <td>แปลงเป็น float</td>
+            </tr>
+            <tr>
+                <td><span class="code">LONGITUDE</span></td>
+                <td>float</td>
+                <td>พิกัดลองจิจูด</td>
+                <td><span class="badge badge-mapped">lon</span></td>
+                <td>แปลงเป็น float</td>
+            </tr>
+            <tr>
+                <td><span class="code">SPEED</span></td>
+                <td>float</td>
+                <td>ความเร็วรถยนต์ (km/h)</td>
+                <td><span class="badge badge-mapped">speed_kmh</span></td>
+                <td>แปลงเป็น float</td>
+            </tr>
+            <tr>
+                <td><span class="code">ENGINE_STATUS</span></td>
+                <td>char ('Y'/'N')</td>
+                <td>สถานะการติดเครื่องยนต์</td>
+                <td><span class="badge badge-mapped">engine_on</span></td>
+                <td>'Y' &rarr; True, 'N' &rarr; False</td>
+            </tr>
+            <tr>
+                <td><em>(ไม่มีในข้อมูล)</em></td>
+                <td>-</td>
+                <td>ไม่มีข้อมูลเลขไมล์สะสม และสัญญาณ CAN Bus</td>
+                <td><span class="badge badge-mapped">odometer_km</span><br><span class="badge badge-mapped">fuel_rate_lh</span> <span class="badge badge-mapped">engine_rpm</span><br><span class="badge badge-mapped">accel_position</span> <span class="badge badge-mapped">brake_active</span></td>
+                <td>กำหนดค่าเป็น <code>None</code> ทั้งหมด</td>
+            </tr>
+            <tr>
+                <td><span class="code">TKNO</span></td>
+                <td>string</td>
+                <td>Internal device callsign; มีอยู่จริงแต่ไม่ใช่ identifier ที่ parser เลือกใช้</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+            <tr>
+                <td><span class="code">DIRECTION</span></td>
+                <td>int</td>
+                <td>Bearing 0–359 องศา</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+            <tr>
+                <td><span class="code">GPS_STATUS</span></td>
+                <td>char ('Y'/'N')</td>
+                <td>สถานะความถูกต้อง/การ fix ของ GPS</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+            <tr>
+                <td><span class="code">ALTITUDE</span></td>
+                <td>int</td>
+                <td>ความสูง หน่วยเมตร</td>
+                <td><span class="badge badge-unmapped">-</span></td>
+                <td>ไม่ได้นำเข้า Unified Schema</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>5. Unified Schema Comparison Matrix</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Unified Field</th>
+                <th>Target Type</th>
+                <th>TMT (Grade A)</th>
+                <th>WDMT (Grade B)</th>
+                <th>SCGJWD (Grade B)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="code">source</span></td>
+                <td>str</td>
+                <td><code>"TMT"</code></td>
+                <td><code>"WDMT"</code></td>
+                <td><code>"SCGJWD"</code></td>
+            </tr>
+            <tr>
+                <td><span class="code">vehicle_id</span></td>
+                <td>str</td>
+                <td>Payload ID ถ้ามี; fixture ใช้ filename token ชั่วคราว</td>
+                <td>registration</td>
+                <td>IMEI</td>
+            </tr>
+            <tr>
+                <td><span class="code">recorded_at</span></td>
+                <td>datetime (UTC+7)</td>
+                <td>Timestamp; fallback GPS.Timestamp</td>
+                <td>local_timestamp</td>
+                <td>GPS_TIME</td>
+            </tr>
+            <tr>
+                <td><span class="code">lat</span></td>
+                <td>float</td>
+                <td>Lat angle</td>
+                <td>lat</td>
+                <td>LATITUDE</td>
+            </tr>
+            <tr>
+                <td><span class="code">lon</span></td>
+                <td>float</td>
+                <td>Lon angle</td>
+                <td>lon</td>
+                <td>LONGITUDE</td>
+            </tr>
+            <tr>
+                <td><span class="code">speed_kmh</span></td>
+                <td>float</td>
+                <td>Vehicle speed</td>
+                <td>speed</td>
+                <td>SPEED</td>
+            </tr>
+            <tr>
+                <td><span class="code">engine_on</span></td>
+                <td>bool | None</td>
+                <td>DFA: 33 ON, 34 OFF, 30 carry</td>
+                <td><code>None</code></td>
+                <td>ENGINE_STATUS (Y/N)</td>
+            </tr>
+            <tr>
+                <td><span class="code">odometer_km</span></td>
+                <td>float | None</td>
+                <td>Total Distance Traveled (numeric; treated as km)</td>
+                <td>mileage</td>
+                <td><code>None</code></td>
+            </tr>
+            <tr>
+                <td><span class="code">fuel_rate_lh</span></td>
+                <td>float | None</td>
+                <td>Vehicle Fuel Rate (L/h)</td>
+                <td><code>None</code></td>
+                <td><code>None</code></td>
+            </tr>
+            <tr>
+                <td><span class="code">engine_rpm</span></td>
+                <td>float | None</td>
+                <td>Engine Speed (RPM)</td>
+                <td><code>None</code></td>
+                <td><code>None</code></td>
+            </tr>
+            <tr>
+                <td><span class="code">accel_position</span></td>
+                <td>float | None</td>
+                <td>Accel Position (%)</td>
+                <td><code>None</code></td>
+                <td><code>None</code></td>
+            </tr>
+            <tr>
+                <td><span class="code">brake_active</span></td>
+                <td>bool | None</td>
+                <td>Stop Light Switch (0/1)</td>
+                <td><code>None</code></td>
+                <td><code>None</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>6. Verification Against Raw Data and Implementation</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Check</th>
+                <th>Verified Result</th>
+                <th>Status / Limitation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Unified field set</td>
+                <td>12 fields ตรงกับ Task 1 target schema ครบ</td>
+                <td><span class="badge badge-mapped">PASS</span></td>
+            </tr>
+            <tr>
+                <td>Actual parsed volume</td>
+                <td>760 records: TMT 7, WDMT 603, SCGJWD 150</td>
+                <td><span class="badge badge-mapped">PASS</span></td>
+            </tr>
+            <tr>
+                <td>Timestamp</td>
+                <td>760 records เป็น timezone-aware <code>Asia/Bangkok</code> (UTC+7)</td>
+                <td><span class="badge badge-mapped">PASS</span></td>
+            </tr>
+            <tr>
+                <td>Ordering</td>
+                <td>เรียงด้วย <code>(vehicle_id, recorded_at)</code></td>
+                <td><span class="badge badge-mapped">PASS</span></td>
+            </tr>
+            <tr>
+                <td>TMT engine state</td>
+                <td>รวม 0x51/0x52 แล้วใช้ DFA ต่อ vehicle; heartbeat ไม่บังคับเป็น OFF</td>
+                <td><span class="badge badge-mapped">PASS</span></td>
+            </tr>
+            <tr>
+                <td>TMT vehicle identity</td>
+                <td><code>Licence card={}</code> และไม่พบ VIN/IMEI/device ID ใน supplied payloads</td>
+                <td><span class="badge badge-unmapped">FIXTURE LIMITATION</span> — filename token ไม่ใช่ source data field</td>
+            </tr>
+            <tr>
+                <td>WDMT vehicle identity</td>
+                <td><code>registration</code> จาก source row</td>
+                <td><span class="badge badge-mapped">PASS</span></td>
+            </tr>
+            <tr>
+                <td>SCGJWD vehicle identity</td>
+                <td><code>IMEI</code> จาก source row และรักษาเลขศูนย์นำหน้า</td>
+                <td><span class="badge badge-mapped">PASS</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
