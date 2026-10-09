@@ -19,6 +19,7 @@ nav:
   - Task 1 — Parse and Unify: task1-overview.html
   - Task 2 — Trip Features: task2-overview.html
   - Task 3 — Driver Risk Model: task3-overview.html
+  - Task 4 - System design: task4-system-design.md
   - Literature Review: review-paper.html
 
 plugins:
